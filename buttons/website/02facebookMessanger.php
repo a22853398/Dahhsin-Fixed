@@ -20,7 +20,7 @@ $facebook_str = "
 </script>
 
 <!-- Your 洽談外掛程式 code -->
-<div class='fb-customerchat' attribution='biz_inbox' page_id='528380117293741'></div>
+<div class='fb-customerchat' attribution='biz_inbox' page_id='XXXXXXXXXXXXX'></div>
 ";
 
 

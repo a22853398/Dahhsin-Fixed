@@ -4,7 +4,7 @@ $facebook_str = "
                 <div    id='fb-root'></div>
                 <div    class='fb-customerchat'
                         attribution='biz_inbox'
-                        page_id='528380117293741'>
+                        page_id='XXXXXXXXXXXXX'>
                 </div>
                 ";
 $dayOfWeek = date(l);
