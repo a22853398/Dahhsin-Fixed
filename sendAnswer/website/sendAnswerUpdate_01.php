@@ -19,7 +19,7 @@ include("03lineNotify.php");
 include("03googleRecaptchaVerify.php");
 $googleObject = new GoogleRecaptcha();
 $linemsg = "\n來源".$_SERVER["HTTP_REFERER"]."\n名：".$pUserID."\n信：".$pEmail."\n解答：".$pAnswer."\nIP：".$remote_ipaddress;
-$token = "QUH41S9QNKebF8tKkzgrEnbUyARFMMFx5cKk1RKZJxq";
+$token = "XXXXXXXXXXXXXXXXX";
 if($googleObject->googleVerify($respon) === true){
     $mail_msgtype = "sendAnswer";
     post_message_token("驗證成功".$linemsg, $token);

@@ -15,7 +15,7 @@ include "../03lineNotify.php";
 include "../03googleRecaptchaVerify.php";
 $respon = $_POST["g-recaptcha-response"];
 $googleObject = new GoogleRecaptcha();
-$token = "QUH41S9QNKebF8tKkzgrEnbUyARFMMFx5cKk1RKZJxq";
+$token = "XXXXXXXXXXXXXXXXXX";
 $answerStr = "";
 for($i=0; $i<count($array_answers); $i++){
     $answerStr.= $array_answers[$i]." ";
