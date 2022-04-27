@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+<title>大新書局</title>
+<{$baseurl_href}>
+<{include_php file="00metahead.php"}>
+<{include_php file="00master.php"}>
+<{include_php file="02lineTrace.php"}>
+<link rel="stylesheet" href="css/aboutUs.css">
+<style>
+    .contactForm table{
+        width: 80%;
+    }
+    .contactForm table tr{
+        border-bottom: 0.5px solid silver;
+    }
+    .contactForm table tr.submit_btn{
+        border-bottom: none;
+    }
+    .contactForm table tr th{
+        width: 23%;
+        border-right: 0.5px solid silver;
+        text-align: center;
+    }
+    .contactForm table tr td{
+        padding: 1% 0% 1% 1%;
+    }
+    .contactForm table tr.submit_btn td{
+        padding: 2% 0% 0% 0%;
+        text-align: center;
+    }
+    .contactForm table tr.submit_btn td button{
+        background: navy;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 1% 3%;
+    }
+    .contactForm textarea{
+        resize: none;
+        width: 80%;
+        margin: 1% 0%;
+    }
+    .contactForm input[type="text"]{
+        margin: 1% 0%;
+        width: 80%;
+    }
+    .contactForm input[type="file"]{
+        cursor: pointer;
+    }
+</style>
+<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.validate.addMethod.js"></script>
+<script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap-tooltip.css" />
+<script>
+$(document).ready(function(){
+    $("#q_type01").bind( "change", function(){
+        let urlstr = "aboutMailUs.php?qvalue="+$('#q_type01').val();
+        $.ajax({
+            method: 'GET',
+            url: urlstr,
+            data: 'test',
+            error:function(thrownError){
+                console.log(thrownError);
+            },
+            success:function(response){
+                let options = "<option value='default'>請選擇...</option>";
+                options += response;
+                $("#q_type02").html(options);
+            }
+        });
+    });
+    
+    /*自訂檢驗函式*/
+    $.validator.addMethod("customValidation", function(value, element, arg) {
+        return arg !== value
+    }, "問題種類必選（問題種類は必須項目です）");
+    		
+    $("#contactForm").validate({
+        showErrors: function(errorMap, errorList) {
+            $.each(this.validElements(), function (index, element) {
+                var $element = $(element);
+        	    $element.data("title", "").removeClass("error").tooltip("destroy");
+            });
+            $.each(errorList, function (index, error) {
+        	    var $element = $(error.element);
+        	    $element.tooltip("destroy").data("title", error.message).addClass("error").tooltip();
+            });
+        },
+        rules: {
+			mbrName:{
+			    required: true
+			},
+			mbrMail:{
+			    required: true,
+			    email: true
+			},
+    		mbrContent:{
+        	    required: true
+            },
+            q_type01:{
+                required: true,
+                customValidation: "default"
+            },
+            q_type02:{
+    		    required: true,
+			    customValidation: "default"
+			},
+			mbrPhone:{
+			    digits:true,
+			    rangelength:[8,16]
+			},
+			mbrOrderid:{
+			    rangelength:[12,12]
+			}
+		},
+		messages: {
+			mbrName:{
+			    required: "姓名必填（名前は必須項目です）"
+			},
+			mbrMail:{
+			    required: "信箱必填（メールは必須項目です）",
+			    email: "信箱格式錯誤（メール形式が正しくないです）"
+			},
+			mbrContent:{
+			    required: "詢問內容必填（お問合せ内容は必須項目です）"
+			},
+			mbrPhone:{
+			    digits: "請輸入整數（電話番号は整数であるべき）",
+			    rangelength: "長度不對（電話番号の桁が正しくないです）"
+			},
+			mbrOrderid:{
+			    rangelength: "長度不對，共12字（注文番号の桁が正しくないです、計12桁）"
+			}
+		},
+        submitHandler: function(form) {
+            if(captchaCheck() === true){
+                let confirmMsg = "請確認以下您的資料是否正確！\n姓名："+$("#mbrName").val()+"\n電話："+$("#mbrPhone").val()+"\nEmail："+$("#mbrMail").val();
+        		if(confirm(confirmMsg)){
+                    $('#formSubmit').attr('disabled', true);
+                    sendAnswerMaku();
+                    setTimeout(function(){
+                        form.submit();
+                    }, 3000);
+        		}
+    	    }else{
+    	        return;
+    	    }
+    	}
+    });
+});
+</script>
+</head>
+
+<body>
+    <{include_php file="00header.php"}>
+    <{include_php file="../03pleaseWait.php"}>
+<div class="container-fluid">
+    <h2 class="titleBar category"><strong>寄信諮詢</strong></h2>
+    <form id="contactForm" class="contactForm" action="../aboutMailUs_update.php" method="post" enctype="multipart/form-data">
+    <table>
+        <tr><th>問題類型</th>
+            <td>
+                <select id="q_type01" name="q_type01">
+                    <option value="default">請選擇...</option>
+                    <{section name="question_type" loop=$question_type}>
+                    <option value="<{$question_type[question_type].value}>"><{$question_type[question_type].title}></option>
+                    <{/section}>
+                </select><br>
+                <select id="q_type02" name="q_type02">
+                    <option value="default">請選擇...</option>
+                </select>    
+            </td>
+        </tr>
+        <tr><th>姓名</th><td><input id="mbrName" name="mbrName" type="text" placeholder="必需。請填入您的姓名"></td></tr>
+        <tr><th>電話</th><td><input id="mbrPhone" name="mbrPhone" type="text" placeholder="選填。若您需要回電建議填寫"></td></tr>
+        <tr><th>Email</th><td><input id="mbrMail" name="mbrMail" type="text" placeholder="必需。請填入能收到信的信箱"></td></tr>
+        <tr><th>問題</th><td><textarea id="mbrContent" name="mbrContent" rows="7" placeholder="必需。請在此描述您的問題"></textarea></td></tr>
+        <tr><th>訂單編號</th><td><input id="mbrOrderid" name="mbrOrderid" type="text" placeholder="選填。第一字是英文大寫的O"></td></tr>
+        <tr><th>附件</th><td><input id="image" name="image" type="file"><span style="color:red; font-size:1rem;">限 .jpg .jpeg .png .pdf，10MB</span></td></tr>
+        <tr><th>回覆語言</th><td>   <input type="radio" name="mbrReplyLan" value="zh_ch" checked="true">繁體中文&emsp;
+                                    <input type="radio" name="mbrReplyLan" value="eng">English&emsp;
+                                    <input type="radio" name="mbrReplyLan" value="jpn">日本語</td>&emsp;</td></tr>
+        <tr><td colspan="2">
+                <div><{include_php file="../03googleRecaptcha.php"}></div>
+            </td>
+        </tr>
+        <tr class="submit_btn"><td colspan="2"><button>確認送出</button></td></tr>
+    </table>
+    </form>
+</div>
+<{include_php file="../02cookiesBar.php"}>
+<{include_php file="00footer.php"}>
+<{include_php file="00footertrace.php"}>
+</body>
+</html>

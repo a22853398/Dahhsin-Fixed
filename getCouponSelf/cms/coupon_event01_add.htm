@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{tpl_str}新增</title>
+<!-- INCLUDESCRIPT BLOCK : external -->
+<link type="text/css" rel="stylesheet" href="js/jquery/jquery-ui/themes/base/jquery.ui.all.css" />
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.datepicker.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/i18n/jquery.ui.datepicker-zh-TW.js"></script>
+<style type="text/css">
+    .ui-datepicker { width: 17em; padding: .2em .2em 0; z-index: 9999 !important; }
+</style>
+<script type="text/javascript" src="js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap-tooltip.css" />
+
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+
+		var dates = $( "#news_date, #news_end_date" ).datepicker({
+			defaultDate: "+1w",
+			changeYear: true,
+			changeMonth: true,
+			numberOfMonths: 3,
+			dateFormat: 'yy-mm-dd',
+			showAnim: 'fadeIn',
+			onSelect: function( selectedDate ) {
+				var option = this.id == "news_date" ? "minDate" : "maxDate",
+					instance = $( this ).data( "datepicker" ),
+					date = $.datepicker.parseDate(
+						instance.settings.dateFormat ||
+						$.datepicker._defaults.dateFormat,
+						selectedDate, instance.settings );
+				dates.not( this ).datepicker( "option", option, date );
+			}
+		});
+
+	$("#form1add").validate({
+		showErrors: function(errorMap, errorList) {
+		  $.each(this.validElements(), function (index, element) {
+		    var $element = $(element);
+		    $element.data("title", "").removeClass("error").tooltip("destroy");
+		  });
+		  $.each(errorList, function (index, error) {
+		    var $element = $(error.element);
+		    $element.tooltip("destroy").data("title", error.message).addClass("error").tooltip();
+		  });
+		},
+		rules: {
+			sortid: {
+				required: true,
+				digits: true
+			},
+			title01: {
+				required: true,
+				maxlength: 250,
+				minlength: 2
+			},
+			//ord_limit: {
+			//	required: true,
+			//	digits: true,
+			//	min: 1	
+			//},
+			dis_amt: {
+				required: true,
+				digits: true,
+				min: 1	
+			},
+			news_date: {
+				required: true
+			},
+			news_end_date: {
+				required: true
+			}
+		},
+		messages: {
+			sortid: {
+				required: "請填寫排序",
+				digits: "須為整數"
+			},
+			title01: {
+				required: "請填寫Coupon活動名稱",
+				maxlength: "標題長度不正確",
+				minlength: "標題至少兩碼"
+			},
+			//ord_limit:  {
+			//	required: "請填寫訂購滿額",
+			//	digits: "須為整數",
+			//	min: "須大於0"
+			//},
+			dis_amt:  {
+				required: "請填寫折扣金額",
+				digits: "須為整數",
+				min: "須大於0"
+			},
+			news_date: {
+				required: "請填寫上架時間"
+			},
+			news_end_date: {
+				required: "請填寫下架時間"			
+			}	
+		},
+		submitHandler: function(form) {
+	     if(confirm('確定要新增資料?')){
+        	form.submit();
+       }
+		}
+  });
+
+	$("#doPost").click(function() {
+	     	 $("#opt").attr("value","edit")
+         $("#form1add").submit();
+	});
+
+	$("#bkmpage01").click(function() {
+		  window.location="{tpl_name}_mang.php?page={page}&sel00_type={sel00_type}";
+	});
+
+});
+//-->
+</script>
+</head>
+<body>
+<!-- INCLUDESCRIPT BLOCK : mainMenu -->
+
+<form name="form1add" id="form1add" method="post" action="{tpl_name}_update.php" enctype="multipart/form-data">
+<input type="hidden" name="opt" value="add" />
+<input type="hidden" name="sel00_type" value="{sel00_type}" />
+
+ 	<div class="page_title01">
+            <ul class="title01">
+                <li>{tpl_str}新增</li>
+            </ul>
+	</div>
+
+<div id="container" >
+
+<fieldset class="inputField">
+   <legend>{tpl_str}新增</legend>
+  <div style="float:left; width: 63%; border-right: 1px solid #DEDEDE;">
+		<div class="field">
+		<label>基本資料：</label><span class="required">*</span><br />
+		<table border="0">
+			<tr><td>排序：</td><td><input type="text" id="sortid" name="sortid" style="width:300px" value="{sortid}" /></td></tr>
+			<tr><td>活動名稱：</td><td><input type="text" id="title01" name="title01" style="width:300px" value="{title01}" /></td></tr>
+			<!--tr><td>訂購滿額：</td><td><input type="text" id="ord_limit" name="ord_limit" style="width:300px" value="{ord_limit}" /></td></tr-->
+			<tr><td>折扣金額：</td><td><input type="text" id="dis_amt" name="dis_amt" style="width:300px" value="{dis_amt}" /></td></tr>
+		</table>
+		</div>
+	<!-- START BLOCK : addpic_row -->
+		<div class="field">
+		<label>附件</label><span class="required">*</span><br />
+
+		<table border="0">
+			<tr><td>寬高：</td><td><input type="text" id="upfile1_wh" name="upfile1_wh" value="{upfile1_wh}" /></td></tr>
+			<tr><td>{picsize1name}：</td><td><input type="file" name="file1" size="15" /> {picsize1} {upfile1}</td></tr>
+		</table>
+		</div>
+	<!-- END BLOCK : addpic_row -->
+  </div>
+
+  <div style="float:left; width: 33%; margin-left: 8px;">   
+
+		<div class="field">
+		<label>分類</label><span class="required">*</span><br />
+		<table border="0">
+			<tr><td>
+		    <select id="lv00_type" name="lv00_type">
+		        <option value="1">Coupon</option>
+		        <option value="2">補償Coupon</option>
+					<!-- START BLOCK : lv00_type_row -->
+					  <!--<option value="{list_id}" {list_sel}>{list_title}</option>-->
+					<!-- END BLOCK : lv00_type_row -->
+		    </select>
+			</td></tr>
+		</table>
+		</div>
+
+		<div class="field">
+		<label>上架時間 </label><br />
+		  <input type="text" name="news_date" id="news_date" value="{news_date}" />
+		</div>
+
+		<div class="field">
+		<label>下架時間 </label><br />
+		  <input type="text" name="news_end_date" id="news_end_date" value="{news_end_date}" />
+		</div>
+
+		<div class="field">
+		<label>狀態</label><br />
+			<select name="visible">
+		    <option value="Y">一般</option>
+		    <option value="N" selected="selected">停用</option>
+			</select>
+		</div>
+
+  </div>
+
+	<!-- START BLOCK : content_row -->
+  <div style="float:left; width: 100%;">   
+		<div class="field">
+			<label>搭配商品介紹</label><span class="required">*</span><br />
+			<textarea name="content01" id="content01" rows="10" cols="80" style="width: 100%; height: 100px">{content01}</textarea>
+		</div>
+
+  </div>
+	<!-- END BLOCK : content_row -->
+	
+  <div class="buttons"  style="float:left; width: 100%; margin-left: 8px;">
+     <input type="button" name="doPost" id="doPost" value="送出" /> 
+     <input type="button" name="bkmpage01" id="bkmpage01" value="回管理頁" />
+  </div>
+
+</fieldset>
+
+</div>
+
+</form>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <title>大新書局</title>
+    <{$baseurl_href}>
+    <{include_php file="00metahead.php"}>
+    <{include_php file="00master.php"}>
+    <link rel="stylesheet" href="css/member.css">
+    <script type="text/javascript" src="js/jquery/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.validate.addMethod.js"></script>
+    <script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap-tooltip.css" />
+</head>
+<body>
+    <{include_php file="00header.php"}>
+    <div class="container-fluid">
+        <h2 class="titleBar category"><strong>優惠券使用查詢</strong></h2>
+        <table class="table table-striped table-bordered table responsive-sm mt-3">
+            <thead class="thead-light">
+                <tr>
+                    <th>使用狀態</th>
+                    <th>使用期限</th>
+                    <th>優惠代碼</th>
+                </tr>
+            </thead>
+            <tbody>
+                <{section name=account_coupon loop=$account_coupon}>
+                <tr>
+                    <th colspan="3"><{$account_coupon[account_coupon].coupon_title}></th>
+                </tr>
+                <tr>
+                    <td><small><{$account_coupon[account_coupon].used_orderid}></small></td>
+                    <td><small><{$account_coupon[account_coupon].coupon_end_date}></small></td>
+                    <td><{$account_coupon[account_coupon].coupon_code}></td>
+                </tr>
+                <{/section}>
+            </tbody>
+        </table>
+        
+        <ul class="pagination">
+        <{$pagenav}>
+        </ul>
+    </div>
+    <{include_php file="../02cookiesBar.php"}>
+    <{include_php file="00footer.php"}>
+    <{include_php file="00footertrace.php"}>
+</body>
+</html>

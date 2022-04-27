@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{tpl_str}</title>
+<!-- INCLUDESCRIPT BLOCK : external -->
+<style type="text/css">
+.template.repeat {
+  display: none;
+}
+</style>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.mouse.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.sortable.js"></script>
+<link href="js/jquery/jquery-ui/themes/ui-lightness/jquery-ui.css" rel="stylesheet" /> 
+
+<script type="text/javascript" src="js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap-tooltip.css" />
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+
+  $(".row_table01 tbody").sortable();
+  //$(".row_table01 tbody").disableSelection();
+
+  $(".row_table01 tbody").bind( "sortstop", function(event, ui) {
+		$(".row_table01 tbody tr").each(function(index){
+		   $(".row_table01 tbody tr input:text[name='sortid[]']").eq(index).val((index)+{page_splt01_add});
+		});
+  });
+
+		$(".row_table01 tbody tr").hover(function(){
+			$(this).addClass("row_hover");
+		},function(){
+      $(this).removeClass("row_hover");
+		});
+
+		$(".row_table01 tbody tr").bind("click",function(){
+			var pos = 0;
+			pos = $(this).attr("class").indexOf("row_selected");
+			if (pos == -1) {
+				$(this).addClass("row_selected");
+			} else {
+				$(this).removeClass("row_selected");
+			}
+		});
+
+	$("#form1add").validate({
+		showErrors: function(errorMap, errorList) {
+		  $.each(this.validElements(), function (index, element) {
+		    var $element = $(element);
+		    $element.data("title", "").removeClass("error").tooltip("destroy");
+		  });
+		  $.each(errorList, function (index, error) {
+		    var $element = $(error.element);
+		    $element.tooltip("destroy").data("title", error.message).addClass("error").tooltip();
+		  });
+		},
+		rules: {
+			title01: {
+				required: true,
+				maxlength: 250,
+				minlength: 2
+			}
+		},
+		messages: {
+			title01: {
+				required:"請填寫標題",
+				maxlength:"標題長度不正確",
+				minlength:"標題至少兩碼"
+			}
+		},
+		submitHandler: function(form) {
+	     if(confirm('確定要修改資料?')){
+        	form.submit();
+       }
+		}
+  });
+
+	$("#bkmpage01").click(function() {
+		  window.location="{tpl_name}_mang.php?page={page}&sel00_type={sel00_type}";
+	});
+
+    $.extend({
+        xbt_allfuc:function(case01,event01,event02){
+					  if(case01 == "bt_del_real"){
+						  	var urlstr = "{tpl_name}_sublist01.php?opt=colorbth01_del01_real&lv00_type={lv00_type}&pid="+event01+"&page={page}&sel00_type={sel00_type}&mpid={pid}";
+					      $.ajax({
+						      url: urlstr,
+						      type: "GET",
+						      cache: false,
+						      dataType: "html",
+						      error:function (xhr, ajaxOptions, thrownError){
+						        //alert(xhr.status);
+						        //alert(xhr.responseText);
+						        //alert(thrownError);
+						      }
+					      });
+					  }
+        }
+    });
+
+		$(".row_table01 tbody tr .bt_del_real").bind("click",function(){
+			var idx01 = $(this).parent().parent().index();
+			if(confirm('確定刪除 '+$(".row_table01 tbody tr .row_title_id").eq(idx01).html())){
+			  $.xbt_allfuc("bt_del_real",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+			  $(this).parent().parent().remove();
+		  }
+		});
+
+	$(".rbthlog01").click(function() {
+		  if(confirm('確定要批次修改?')){
+	      $("#bth01form").submit();
+	    }
+	});
+	
+	$("#rbthlog02").click(function() {
+		  if(confirm('確定要新增全部會員?')){
+	     	 $("#opt").attr("value","colorbth02")
+	      $("#bth01form").submit();
+	    }
+	});
+
+    $("#tbody6 .del01").click(function() { 
+        $(this).parents(".repeat").remove(); 
+    }); 
+
+	$("#rbthadd").click(function() {
+		  var lastidx = 0;
+		  var answer01 = $("#tbody6 tr").size() % 2;
+		  var var01 = "";
+		  if(answer01 == 1){
+		    var01 = "odd";
+		  }	  
+
+        $("#tbody6>.template").clone(true)
+          .removeClass("template")
+          .removeClass(var01)
+          .appendTo($("#tbody6"));
+
+		$(".row_table01 tbody tr").each(function(index){
+		   $(".row_table01 tbody tr input:text[name='sortid[]']").eq(index).val((index)+{page_splt01_add});
+		   lastidx = index;
+		});
+
+    var milliseconds = new Date().getTime();
+		//$(".row_table01 tbody tr input:text[name='var01[]']").eq(lastidx).val(milliseconds);
+		$(".row_table01 tbody tr input:text[name='var01[]']").eq(lastidx).attr("id","color_new"+lastidx+milliseconds);
+		$("#color_new"+lastidx+milliseconds).colorpicker({showOn:'focus'});
+	});
+
+});
+//-->
+</script>
+<style>
+.evo-pop table{
+  width: auto;
+  border: none;
+  border-collapse: separate;
+  font-size: 1.0em;
+}
+.evo-pop tr {
+  border: none;
+}
+.evo-pop tbody td,th {
+  border-bottom: none;
+}
+.evo-palcenter table{
+  border-collapse: collapse;
+}
+</style>
+</head>
+<body>
+<!-- INCLUDESCRIPT BLOCK : mainMenu -->
+
+ 	<div class="page_title01">
+            <ul class="title01">
+                <li>{tpl_str}</li>
+            </ul>
+	</div>
+
+	<ul class="tablist">
+	<li><a href="coupon_event01_edit.php?pid={pid}&page={page}&sel00_type={sel00_type}" title="基本資料">基本資料</a></li>
+	</ul>
+
+<div id="container" >
+             
+   <fieldset class="inputField">
+   <legend></legend>
+   <div style="float:left; width: 73%; border-right: 1px solid #DEDEDE;">
+		<div class="field">
+		<label>基本資料</label><span class="required">*</span><br />
+		<table border="0">
+			<tr><td>活動名稱：{title01}</td></tr>
+			<tr><td>折扣金額：{dis_amt} </td></tr>
+			<tr><td>活動日期：{news_date} ~ {news_end_date}</td></tr>
+			<tr><td></td></tr>
+		</table>
+		</div>
+
+  </div>
+  <div style="float:left; width: 23%; margin-left: 8px;">   
+
+		<div class="field">
+		<label>更新人員</label>
+		<div class="formHelp">{member_area}</div>
+		<div class="formHelp">{member_id}</div>
+		<div class="formHelp">{update_date}</div>
+		</div>
+
+  </div>
+
+  <div style="float:left; width: 100%;">   
+
+<form name="bth01form" id="bth01form" method="post" action="{tpl_name}_sublist01.php">
+<input type="hidden" id="opt" name="opt" value="colorbth01" />
+<input type="hidden" id="pid" name="pid" value="{pid}" />
+<input type="hidden" id="page" name="page" value="{page}" />
+<input type="hidden" id="sel00_type" name="sel00_type" value="{sel00_type}" />
+
+
+	  <div class="field">
+		<label>大量輸入</label><span class="required">*</span> EX:會員帳號1,會員帳號2,會員帳號3,會員帳號4<br />
+		<textarea name="batch01" id="batch01" rows="10" cols="80" style="width: 100%; height: 50px"></textarea>
+		</div>
+
+	<ul class="tablist">
+	<li><a href="#" class="rbthlog01" title="批次修改">批次修改</a></li>
+	<li><a href="#" id="rbthadd" title="新增">新增</a></li>
+<!-- START BLOCK : All_member -->
+	<li><a href="#" id="rbthlog02" title="全部會員">全部會員</a></li>
+<!-- END BLOCK : All_member -->
+	</ul>
+
+
+	<div class="row_table01">
+          <table>
+            <thead>
+              <tr>
+                <th width="20">&nbsp;</th>
+                <th style="display:none;">流水號</th>
+                <th style="display:none;">檔案名稱</th>
+                <th width="30">排序</th>
+                <th>會員帳號</th>
+				<th>Coupon</th>
+                <th>備註-訂單</th>
+                <th>新增時間</th>
+                <th>人員</th>
+              </tr>
+            </thead>
+            <tbody id="tbody6">
+              <tr class="odd template repeat">
+                <th><img src="js/icon/cross.png" class="del01" title="DEL" alt="DEL" /></th>
+                <td class="row_serialid" style="display:none;">&nbsp;<input type="hidden" size="40" name="serialid[]" value="" title="" /></td>
+                <td class="row_title_id" style="display:none;">&nbsp;</td>
+                <td><input type="text" size="3" name="sortid[]" value="0" title="" /></td>
+                <td class="row_vw_id"><input type="text" size="20" name="var01[]" value="" title="" /></td>
+				<td>&nbsp;</td>
+                <td><input type="text" size="30" name="var02[]" value="" title="" /></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;<input type="hidden" size="40" name="row01[]" value="NEW" title="NEW" /></td>
+              </tr>
+							<!-- START BLOCK : Table1_row -->
+              <tr {rowid01ck}>
+                <th>{bt_del}{bt_undel}{bt_edit}</th>
+                <td class="row_serialid" style="display:none;">{serialid}</td>
+                <td class="row_title_id" style="display:none;">{var01}</td>
+                <td>{serialidbt}{sortid}</td>
+                <td class="row_vw_id">{var01bt}</td>
+				<td>{coupon}</td>
+                <td>{var02bt}</td>
+                <td>{add_date}</td>
+                <td>{member_str01}<input type="hidden" size="40" name="row01[]" value="OLD" title="OLD" /></td>
+              </tr>
+							<!-- END BLOCK : Table1_row -->
+            </tbody>
+          </table>
+
+	<ul class="tablist_bottom">
+	<li><a href="#" class="rbthlog01" title="批次修改">批次修改</a></li>
+	</ul>
+
+	</div>
+</form>
+
+
+  </div>
+
+
+  <div class="buttons"  style="float:left; width: 100%; margin-left: 8px;">
+<!-- START BLOCK : tablist01_doPost -->
+     <!--<input type="button" name="doPost" id="doPost" value="送出" />-->
+<!-- END BLOCK : tablist01_doPost -->
+     <input type="button" name="bkmpage01" id="bkmpage01" value="回管理頁" />
+  </div>
+
+</fieldset>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+<title>大新書局</title>
+<{$baseurl_href}>
+<{include_php file="00metahead.php"}>
+<{include_php file="00master.php"}>
+<link rel="stylesheet" href="css/faq.css">
+</head>
+
+<body>
+  <{include_php file="00header.php"}>
+
+<div class="container-fluid">
+  <h2 class="titleBar category"><strong> 常見問題 Q & A </strong></h2>
+    <{section name=lv01_type loop=$faq_lv01_type}>
+        <a href="faq.php?lv01_type=<{$faq_lv01_type[lv01_type].title01}>" class="theList"><{$faq_lv01_type[lv01_type].title01}></a>
+    <{/section}>
+</div>
+<{include_php file="../02cookiesBar.php"}>
+<{include_php file="00footer.php"}>
+<{include_php file="00footertrace.php"}>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+<title>大新書局</title>
+<{include_php file="02lineTrace.php"}>
+<{$baseurl_href}>
+<{include_php file="00metahead.php"}>
+<{include_php file="00master.php"}>
+<link rel="stylesheet" href="css/faq.css">
+<style>
+    #faq_titles{
+        display: none;
+    }
+    
+    
+    .faqInfo dt{
+        cursor: pointer;
+        /* 防止選取 */
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */
+    }
+    .faqInfo dd{
+        display: none;
+    }
+</style>
+<script type="text/javascript">
+    function onclickTitle(){
+        var answer = event.currentTarget.nextElementSibling;
+        var title = event.currentTarget;
+        //全關
+        var allAnswer = document.getElementsByTagName("dd");
+        for(var i=0; i<allAnswer.length; i++){
+            allAnswer[i].style.display = "none";
+        }
+        //再開點選的
+        answer.style.display = "block";
+        title.scrollIntoView({//視窗滾動到這個問題的標題
+            behavior: 'smooth'
+        });
+    }
+</script>
+</head>
+<body>
+  <{include_php file="00header.php"}>
+
+<div class="container-fluid">
+    <h2 class="titleBar category" id="typeTitle" value="<{$serialid_now}>"><strong><{$title_now}></strong></h2>
+    <div id="faq_titles">
+        <{section name=faq_title loop=$faq_lv01_type}>
+        <{if $faq_lv01_type[faq_title].title01 == $title_now}>
+        <a href="faq.php?lv01_type=<{$faq_lv01_type[faq_title].title01}>">
+            <h2 class="titleBar category" style="border-top: 2px solid; background:rgb(132,35,125); color:rgb(237,216,233);">
+                <strong><{$faq_lv01_type[faq_title].title01}></strong>
+            </h2>
+        </a>
+        <{else}>
+        <a href="faq.php?lv01_type=<{$faq_lv01_type[faq_title].title01}>">
+            <h2 class="titleBar category" style="border-top: 2px solid;">
+                <strong><{$faq_lv01_type[faq_title].title01}></strong>
+            </h2>
+        </a>
+        <{/if}>
+        <{/section}>
+    </div>
+    <script>
+        let typeTitle = document.getElementById("typeTitle");
+        let faqTitles = document.getElementById("faq_titles");
+        function slideDownFaqTitles(){
+            if(faqTitles.style.display === "none"){
+                typeTitle.style.color = "rgb(237,216,233)";
+                typeTitle.style.backgroundColor = "rgb(132,35,125)";
+                faqTitles.style.display = "block";
+            }else{
+                typeTitle.style.backgroundColor = "rgb(237,216,233)";
+                typeTitle.style.color = "rgb(132,35,125)";
+                faqTitles.style.display = "none";
+            }
+        }
+        window.onload = function(){
+            slideDownFaqTitles();
+        }
+        typeTitle.addEventListener("click", slideDownFaqTitles);
+    </script>
+    
+    <dl class="faqInfo">
+        <{section name=faq_articles loop=$faq_Articles}>
+            <dt onclick="onclickTitle();"><{$faq_Articles[faq_articles].title01}></dt>
+            <dd><{$faq_Articles[faq_articles].content02}></dd>
+        <{/section}>
+    </dl>
+
+    <a href="faqList_1.php" class="btn btn-back mt-4">回 Q & A 列表</a>
+</div>
+<{include_php file="../02cookiesBar.php"}>
+<{include_php file="00footer.php"}>
+<{include_php file="00footertrace.php"}>
+</body>
+</html>

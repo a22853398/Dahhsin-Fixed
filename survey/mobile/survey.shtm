@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+<title>大新書局</title>
+<{$baseurl_href}>
+<{include_php file="00metahead.php"}>
+<{include_php file="00master.php"}>
+<link rel="stylesheet" href="css/member.css">
+<script type="text/javascript" src="js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.validate.addMethod.js"></script>
+<script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap-tooltip.css" />
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#login01_org").validate({
+        showErrors: function(errorMap, errorList) {
+            $.each(this.validElements(), function (index, element) {
+                var $element = $(element);
+                $element.data("title", "").removeClass("error").tooltip("destroy");
+            });
+            $.each(errorList, function (index, error) {
+                var $element = $(error.element);
+                $element.tooltip("destroy").data("title", error.message).addClass("error").tooltip();
+            });
+        },
+        rules:{
+            mbr_name:{ required:true},
+            mbr_gender:{ required:true},
+            mbr_years:{ required:true},
+            mbr_education:{ required:true},
+            mbr_email:{ required:true},
+            jpn_level:{ required:true},
+            jpn_learn_time:{ required:true},
+            jpn_learn_money:{ required:true},
+            pen_yes:{ required:true},
+            "jpn_learn_type[]":{ required: true},
+            ebook_use:{ required:true},
+            ebook_jpbook:{ required:true},
+            ebook_jpbook_howmany:{ required:true},
+            ebook_jpbook_fav:{ required:true},
+            ebook_time:{ required:true},
+            ebook_spend:{ required:true},
+            "ebook_platform[]":{ required:true},
+            "ebook_device[]":{ required:true},
+            "ebook_reason[]":{ required:true},
+            ebook_try:{ required:true},
+            "ebook_publish[]":{ required:true},
+            //ebook_publish_other:{ required:true},
+            "ebook_publish_type[]":{ required:true}
+        },
+        messages: {
+            mbr_name:{ required: "必填欄位"},
+            mbr_gender:{ required:"必填欄位"},
+            mbr_years:{ required:"必填欄位"},
+            mbr_education:{ required:"必填欄位"},
+            mbr_email:{ required:"必填欄位"},
+            jpn_level:{ required:"必填欄位"},
+            jpn_learn_time:{ required:"必填欄位"},
+            jpn_learn_money:{ required:"必填欄位"},
+            pen_yes:{ required:"必填欄位"},
+            "jpn_learn_type[]":{ required: "必填欄位"},
+            ebook_use:{ required:"必填欄位"},
+            ebook_jpbook:{ required:"必填欄位"},
+            ebook_jpbook_howmany:{ required:"必填欄位"},
+            ebook_jpbook_fav:{ required:"必填欄位"},
+            ebook_time:{ required:"必填欄位"},
+            ebook_spend:{ required:"必填欄位"},
+            "ebook_platform[]":{ required:"必填欄位"},
+            "ebook_device[]":{ required:"必填欄位"},
+            "ebook_reason[]":{ required:"必填欄位"},
+            ebook_try:{ required:"必填欄位"},
+            "ebook_publish[]":{ required:"必填欄位"},
+            //ebook_publish_other:{ required:"必填欄位"},
+            "ebook_publish_type[]":{ required:"必填欄位"}
+        },
+        submitHandler: function(form) {
+            //sendAnswerMake();
+            //form.submit();
+            sendAnswerMake();
+        }
+    });
+    //跳題
+    $("input[name='ebook_use']").on("change", function(){
+        if(this.value == "n"){
+            $("input[name='ebook_jpbook']").prop("checked", false);//先清除值之後再隱藏
+            $("input[name='ebook_jpbook']").parent().parent().hide();
+            $("input[name='ebook_jpbook_howmany']").prop("checked",false);
+            $("input[name='ebook_jpbook_howmany']").parent().parent().hide();
+            $("input[name='ebook_jpbook_fav']").val("");
+            $("input[name='ebook_jpbook_fav']").parent().hide();
+            $("input[name='ebook_time']").prop("checked",false);
+            $("input[name='ebook_time']").parent().parent().hide();
+            $("input[name='ebook_spend']").prop("checked",false);
+            $("input[name='ebook_spend']").parent().parent().hide();
+            $("input[name='ebook_platform[]']").prop("checked",false);
+            $("input[name='ebook_platform[]']").parent().parent().hide();
+            $("input[name='ebook_device[]']").prop("checked",false);
+            $("input[name='ebook_device[]']").parent().parent().hide();
+            $("input[name='ebook_reason[]']").prop("checked",false);
+            $("input[name='ebook_reason[]']").parent().parent().hide();
+            $("input[name='ebook_try']").parent().parent().show();
+        }else{
+            $("input[name='ebook_jpbook']").parent().parent().show();
+            $("input[name='ebook_jpbook_howmany']").parent().parent().show();
+            $("input[name='ebook_jpbook_fav']").parent().show();
+            $("input[name='ebook_time']").parent().parent().show();
+            $("input[name='ebook_spend']").parent().parent().show();
+            $("input[name='ebook_platform[]']").parent().parent().show();
+            $("input[name='ebook_device[]']").parent().parent().show();
+            $("input[name='ebook_reason[]']").parent().parent().show();
+            $("input[name='ebook_try']").prop("checked",false);
+            $("input[name='ebook_try']").parent().parent().hide();
+        }
+    });
+    $("input[name='ebook_jpbook']").on("change", function(){
+        if(this.value == "n"){
+            $("input[name='ebook_jpbook_howmany']").prop("checked",false);
+            $("input[name='ebook_jpbook_howmany']").parent().parent().hide();
+            $("input[name='ebook_jpbook_fav']").val("");
+            $("input[name='ebook_jpbook_fav']").parent().hide();
+        }else{
+            $("input[name='ebook_jpbook_howmany']").parent().parent().show();
+            $("input[name='ebook_jpbook_fav']").parent().show();
+        }
+    });
+    
+    $("#goToHome").on("click",function(){
+        window.location.href="<{$mainurl}>";
+    });
+    
+    //個資同意區塊in
+    $("#policyButton").on("click",function(){
+        $(".policyModal").fadeIn();
+    });
+    //個資同意區塊out
+    $(".policyModal").on("click", function(e){
+        if($(e.target).closest(".policyModalContent").length === 0){
+            $(".policyModal").fadeOut();
+        }
+    });
+    $("#policyCloseButton").on("click", function(){
+        $(".policyModal").fadeOut();
+    });
+});
+function sendAnswerMake(){
+    var maku = document.getElementById("maku");
+    var textMsg = document.getElementById("ch2");
+    var maku_content = document.getElementById("modal_content");
+    var array_checkboxes = [];
+    if(captchaCheck() === true){
+        textMsg.innerHTML = "謝謝您的填寫，請稍後";
+        maku.style.display = "block";
+        maku_content.style.animationName = "modal-fade-in";
+        maku_content.style.animationDuration = "0.5s";
+        setTimeout(function(){
+            document.getElementById("login01_org").submit();
+        }, 2100);
+    }
+}
+</script>
+<style>
+    .policyButton{
+        width: 100%;
+        font-weight: bold;
+    }
+    .policyButton button{
+        background: navy;
+    }
+    .policyModal{
+        background: rgba(0,0,0,0.6);
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 20;
+        display: none;
+    }
+    .policyModal .policyModalContent{
+        width: 80%;
+        height: 80%;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        padding: 2vw;
+        
+        /* 防止選取 */
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */
+        
+        border: 3px solid silver;
+        background-color: white;
+        
+        /* 垂直置中 */
+        top: 58%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+        
+        overflow-y: scroll;
+    }
+    .policyModal .policyModalContent h1{
+        margin-top: 2vw;
+        font-size: 6vw;
+        line-height: 1vw;
+        font-weight: bold;
+    }
+    .policyModal .policyModalContent ul{
+        font-size: 4vw;
+        margin-top: 5vw;
+    }
+    .policyModal .policyModalContent ul li{
+        margin-left: -8vw;
+    }
+    .policyModal button{
+        position: absolute;
+        border-radius: 50%;
+        right: 5%;
+        top: 15%;
+        z-index: 2;
+    }
+</style>
+<style>
+    .modal_background{
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            position: fixed;
+            z-index: 5;
+            display: none;
+    }
+    @keyframes modal-fade-in{
+        from{
+            opacity: 0%;
+        },
+        to{
+            opacity: 100%;
+        }
+    }
+    @keyframes modal-fade-out{
+        from{
+            opacity: 100%;
+        },
+        to{
+            opacity: 0%;
+        }
+    }
+    .modal_content{
+        width: 60%;
+        height: 15vw;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        font-size: 5vw;
+        text-align: center;
+            
+        /* 防止選取 */
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */
+            
+        border: 3px solid silver;
+        border-radius: 2vw;
+        background-color: white;
+            
+        /* 垂直置中 */
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+            
+        display: flex;
+        justify-content: center;
+        align-items: center;
+            
+        /* 超出文字不換行、不顯示 */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+</head>
+<body>
+<div class="modal_background" id="maku">
+        <div class="modal_content" id="modal_content"><span id="ch2"></span><span id="ch3">...</span></div>
+        <script type="text/javascript">
+            function toSpans(span) {
+                var str=span.firstChild.data;
+                var a=str.length;
+                span.removeChild(span.firstChild);
+                for(var i=0; i<a; i++) {
+                    var theSpan=document.createElement("SPAN");
+                    theSpan.appendChild(document.createTextNode(str.charAt(i)));
+                    span.appendChild(theSpan);
+                }
+            }
+            function CaihongSpan(span, hue, deg, brt, spd, hspd) {
+                this.deg=(deg==null?360:Math.abs(deg));
+                this.hue=(hue==null?0:Math.abs(hue)%360);
+                this.hspd=(hspd==null?3:Math.abs(hspd)%360);
+                this.length=span.firstChild.data.length;
+                this.span=span;
+                this.speed=(spd==null?50:Math.abs(spd));
+                this.hInc=this.deg/this.length;
+                this.brt=(brt==null?255:Math.abs(brt)%256);
+                this.timer=null;
+                toSpans(span);
+                this.moveCaihong();
+            }
+            CaihongSpan.prototype.moveCaihong = function() {
+                if(this.hue>359) this.hue-=360;
+                var color;
+                var b=this.brt;
+                var a=this.length;
+                var h=this.hue;
+            
+                for(var i=0; i<a; i++) {
+            
+                    if(h>359) h-=360;
+            
+                    if(h<60) { color=Math.floor(((h)/60)*b); red=b;grn=color;blu=0; }
+                    else if(h<120) { color=Math.floor(((h-60)/60)*b); red=b-color;grn=b;blu=0; }
+                    else if(h<180) { color=Math.floor(((h-120)/60)*b); red=0;grn=b;blu=color; }
+                    else if(h<240) { color=Math.floor(((h-180)/60)*b); red=0;grn=b-color;blu=b; }
+                    else if(h<300) { color=Math.floor(((h-240)/60)*b); red=color;grn=0;blu=b; }
+                    else { color=Math.floor(((h-300)/60)*b); red=b;grn=0;blu=b-color; }
+            
+                    h+=this.hInc;
+            
+                    this.span.childNodes[i].style.color="rgb("+red+", "+grn+", "+blu+")";
+                }
+                this.hue+=this.hspd;
+            }
+            var r3=document.getElementById("ch3");
+            var myCaihongSpan2=new CaihongSpan(r3, 0, 360, 255, 50, 350);
+            myCaihongSpan2.timer=window.setInterval("myCaihongSpan2.moveCaihong()", myCaihongSpan2.speed);
+        </script>
+    </div>
+    <{include_php file="00header.php"}>
+<div class="container-fluid">
+    <h2 class="titleBar category"><strong>填問卷抽好禮</strong></h2>
+    <{if $loginStatus === false}>
+    <{$login_button}>
+    <{else if $loginStatus === true && $count_hadRespon >= 1}>
+    <{$thankyou_respon}>
+    <{else if $loginStatus === true && $count_ableSurvey != 1}>
+    <{$noAbleSurvey}>
+    <{else}>
+    <form name="login01_org" id="login01_org" method="post" action="../survey_update.php">
+    <input type="hidden" name="wwwpath" value="{wwwpath}"/>
+    <p class="theInfo mt-2"><strong>
+        <{$survey_subscribe}>
+        </strong></p>
+    <div class="form-group">
+        <{section name=all_question_ary loop=$all_question_ary}>
+        <label style="font-size:1.5em; color:navy; margin-bottom: -1%;"><{$all_question_ary[all_question_ary].question_group_title}></label>
+            <{section name=group_question_content loop=$all_question_ary[all_question_ary].question_group_content}>
+            <div style="width:300px; margin:3% 0%;">
+            <label style="font-weight:bold;"><{$all_question_ary[all_question_ary].question_group_content[group_question_content].question_title}></label>
+            <{$all_question_ary[all_question_ary].question_group_content[group_question_content].question_string}>
+            </div>
+            <{/section}>
+        <{/section}>
+    </div>
+    <div class="policyButton">
+        若您按下確認送出，表示已您同意<br><button id="policyButton" class="btn btn-pink" type="button">個資利用相關事項</button>
+    </div>
+    <div class="policyModal">
+        <button type="button" id="policyCloseButton">&#10006;</button>
+        <div class="policyModalContent">
+            <h1>個資利用相關事項</h1>
+            <ul>
+                <li>大新科技出版集團(下稱本公司)依據個資法第8條為個人資料之蒐集告知。
+                </li>
+                <li>本公司於各項行銷活動之特定目的內蒐集、處理及利用您的個人資料。<br>
+                    個人資料類別包含姓名、電話及各活動所須個人資料，
+                    該個人資料利用的期間、地區、對象及方式依各活動辦法暨個資法辦理。<br>
+                </li>
+                <li>您所留下的各項資料，將僅供本公司、本公司之關係企業或與您詢問事項有關之合作廠商，
+                    為解決您的問題而須進行聯繫、回覆等相關事項以及用於問題統計與分析之特定目的，
+                    於本公司、本公司之關係企業或合作廠商所在地使用。
+                    除此之外，本公司並不會將您所留的資料提供給他人。<br>
+                </li>
+                <li>
+                    對於您於本網站所留的個人資料，仍可依個人資料保護法的規定，
+                    來信 <a href="mailto:dhlin@dahhsin.com.tw">dhlin@dahhsin.com.tw</a> 或來電 (02)2707-3232 向本公司行使查詢或閱覽、
+                    製給複製本、補充或更正、停止蒐集處理或利用、刪除之權利。
+                </li>
+                <li>
+                    您可自由選擇提供個人資料的程度，但如果您提供的資料有誤或不足時，本公司可能無法提供您完整的服務。
+                </li>
+                <li>
+                    本公司已履行上開告知義務，您同意並瞭解本公司蒐集、處理或利用個人資料之目的及用途。
+                </li>
+                <li>
+                    如您已參加本公司之行銷活動或於客服方式留下聯繫方式者，視為同意本蒐集、處理及利用個人資料告知事項。
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div style="margin: 5% 0% 5% 0%;">
+        <{include_php file="../03googleRecaptcha.php"}>
+    </div>
+    <button class="btn btn-pink" id="takeAnswer">確定送出</button>
+    </form>
+    <script>
+        document.getElementsByName('mbr_email')[0].disabled = true;
+        document.getElementsByName('mbr_email')[0].value = "<{$mbr_email}>";
+    </script>
+    <{/if}>
+    <br>
+    <button class="btn btn-pink" id="goToHome">回到首頁</button>
+</div>
+<{include_php file="../02cookiesBar.php"}>
+<{include_php file="00footer.php"}>
+<{include_php file="00footertrace.php"}>
+
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<title>大新書局</title>
+<{$baseurl_href}>
+<{include_php file="00metahead.php"}>
+<{include_php file="02lineTrace.php"}>
+<{include_php file="00external.php"}>
+<script type="text/javascript">
+	
+</script>
+<script type="text/javascript" src="js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.validate.addMethod.js"></script>
+<script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap-tooltip.css" />
+<script type="text/javascript">
+$(document).ready(function() {
+	$('a.scrollUp').click(function(){
+		$('body,html').animate({scrollTop:0});
+	});
+	
+	$("#takeCouponButton").on("click", function(){
+	    var maku = document.getElementById("maku");
+	    var textMsg = document.getElementById("ch2");
+	    var maku_content = document.getElementById("modal_content");
+	    if(captchaCheck() === true){
+	        var array_checkboxes = [];
+            var checkboxes = document.querySelectorAll('input[type=checkbox]:checked');
+            for (var i = 0; i < checkboxes.length; i++) {
+                array_checkboxes.push(checkboxes[i].value);
+            }
+            if(array_checkboxes.length < 1){
+                textMsg.innerHTML = "您沒有選取任何優惠券";
+                maku.style.display = "block";
+                maku_content.style.animationName = "modal-fade-in";
+                maku_content.style.animationDuration = "0.5s";
+                setTimeout(function(){
+                    maku_content.style.animationName = "modal-fade-out";
+                    maku_content.style.opacity = "0%";
+                }, 2100);
+                setTimeout(function(){
+                    maku.style.display = "none";
+                    maku_content.style.opacity = "100%";
+                }, 2500);
+            }else{
+                textMsg.innerHTML = "優惠領取中，請稍後";
+                maku.style.display = "block";
+                maku_content.style.animationName = "modal-fade-in";
+                maku_content.style.animationDuration = "0.5s";
+                setTimeout(function(){
+                    $("form").submit();
+                }, 2100);
+            }
+	    }
+	});
+	
+});
+function toSpans(span) {
+  var str=span.firstChild.data;
+  var a=str.length;
+  span.removeChild(span.firstChild);
+  for(var i=0; i<a; i++) {
+    var theSpan=document.createElement("SPAN");
+    theSpan.appendChild(document.createTextNode(str.charAt(i)));
+    span.appendChild(theSpan);
+  }
+}
+function CaihongSpan(span, hue, deg, brt, spd, hspd) {
+    this.deg=(deg==null?360:Math.abs(deg));
+    this.hue=(hue==null?0:Math.abs(hue)%360);
+    this.hspd=(hspd==null?3:Math.abs(hspd)%360);
+    this.length=span.firstChild.data.length;
+    this.span=span;
+    this.speed=(spd==null?50:Math.abs(spd));
+    this.hInc=this.deg/this.length;
+    this.brt=(brt==null?255:Math.abs(brt)%256);
+    this.timer=null;
+    toSpans(span);
+    this.moveCaihong();
+}
+CaihongSpan.prototype.moveCaihong = function() {
+  if(this.hue>359) this.hue-=360;
+  var color;
+  var b=this.brt;
+  var a=this.length;
+  var h=this.hue;
+
+  for(var i=0; i<a; i++) {
+
+    if(h>359) h-=360;
+
+    if(h<60) { color=Math.floor(((h)/60)*b); red=b;grn=color;blu=0; }
+    else if(h<120) { color=Math.floor(((h-60)/60)*b); red=b-color;grn=b;blu=0; }
+    else if(h<180) { color=Math.floor(((h-120)/60)*b); red=0;grn=b;blu=color; }
+    else if(h<240) { color=Math.floor(((h-180)/60)*b); red=0;grn=b-color;blu=b; }
+    else if(h<300) { color=Math.floor(((h-240)/60)*b); red=color;grn=0;blu=b; }
+    else { color=Math.floor(((h-300)/60)*b); red=b;grn=0;blu=b-color; }
+
+    h+=this.hInc;
+
+    this.span.childNodes[i].style.color="rgb("+red+", "+grn+", "+blu+")";
+  }
+  this.hue+=this.hspd;
+}
+</script>
+<style>
+    .modal_background{
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        position: fixed;
+        z-index: 5;
+        display: none;
+    }
+    @keyframes modal-fade-in{
+        from{
+            opacity: 0%;
+        },
+        to{
+            opacity: 100%;
+        }
+    }
+    @keyframes modal-fade-out{
+        from{
+            opacity: 100%;
+        },
+        to{
+            opacity: 0%;
+        }
+    }
+    .modal_content{
+        width: 60%;
+        height: 10vw;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        font-size: 4vw;
+        text-align: center;
+        
+        /* 防止選取 */
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */
+        
+        border: 3px solid silver;
+        border-radius: 2vw;
+        background-color: white;
+        
+        /* 垂直置中 */
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        /* 超出文字不換行、不顯示 */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .chooseCoupon{
+        margin: 2% 0% 2% 0%;
+    }
+    .chooseCoupon button.title, .ableUseCoupon button.title{
+        border: none;
+        background: none;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin: 1% 1%;
+        width: 100%;
+        text-align: left;
+    }
+    .chooseCoupon .detail, .ableUseCoupon table{
+        text-align: center;
+        width: 100%;
+    }
+    .chooseCoupon .ableAddCoupons .detail tr, .ableUseCoupon table tr{
+        border-top: 0.5px solid black;
+        border-bottom: 0.5px solid black;
+        border-left: 0.5px solid black;
+        border-right: 0.5px solid black;
+    }
+    .chooseCoupon .ableAddCoupons .detail th, .ableUseCoupon table tr th{
+        border-right: 0.5px dotted silver;
+        padding: 0.5% 0%;
+        font-size: 1.3em;
+        color: rgb(20, 20, 187);
+    }
+    .chooseCoupon .ableAddCoupons .detail td, .ableUseCoupon table tr td{
+        border-right: 0.5px dotted silver;
+        padding: 1% 0%;
+    }
+    .chooseCoupon .ableAddCoupons .detail td.couponName, .ableUseCoupon table tr td.couponName{
+        text-align: left;
+        white-space: nowrap;  /*禁止td換行*/
+        overflow: hidden;  /*隱藏X,Y滾動條*/
+        text-overflow: ellipsis;/*將顯示不完的以...顯示*/
+        padding-left: 1%;
+    }
+    .chooseCoupon .ableAddCoupons .detail tr:nth-child(odd), .ableUseCoupon table tr:nth-child(odd){
+        background: rgb(235,235,235);
+    }
+    .chooseCoupon form button{
+        margin-left: 40%;
+        cursor: pointer;
+        border-radius: 5px;
+        background: rgb(20, 20, 150);
+        color:white;
+        text-align: center;
+        padding: 1%;
+        font-size: 1.5em;
+        font-weight: bold;
+        border: none;
+    }
+    
+    
+</style>
+<link href="css/learningMap.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="modal_background" id="maku">
+    <div class="modal_content" id="modal_content"><span id="ch2"></span><span id="ch3">...</span></div>
+    <script type="text/javascript">
+        var r3=document.getElementById("ch3");
+        var myCaihongSpan2=new CaihongSpan(r3, 0, 360, 255, 50, 350);
+        myCaihongSpan2.timer=window.setInterval("myCaihongSpan2.moveCaihong()", myCaihongSpan2.speed);
+    </script>
+</div>    
+    
+<div id="wrapper" class="member">
+    <{include_php file="00header.php"}>
+	<div class="mainContent memberDiv" >
+	<div class="routeMain"><a href="#">會員專區</a> ＞  領取優惠券</div>
+    <div class="leftPart">
+        <{include_php file="00sidebarMember.php"}>
+    </div>	
+    <div class="content">
+        <div class="memberArea">
+            <div class="headerBar">領取優惠券</div>
+            <{if $loginStatus === false}>
+                    <{$login_button}>
+            <{else}>
+            <div class="ableUseCoupon">
+                <button class="title">可使用折價券</button>
+                <div>
+                    <table>
+                        <tr>
+                            <th width="10%">代碼</th>
+                            <th width="40%">優惠名稱</th>
+                            <th width="10%">低消</th>
+                            <th width="10%">折價</th>
+                            <th width="15%">起始日期</th>
+                            <th width="15%">使用期限</th>
+                        </tr>
+                        <{section name=able_coupon loop=$able_coupon}>
+                        <tr>
+                            <td><{$able_coupon[able_coupon].able_coupon_code}></td>
+                            <td class="couponName"><{$able_coupon[able_coupon].able_coupon_title}></td>
+                            <td><{$able_coupon[able_coupon].able_coupon_minamt}>元</td>
+                            <td><{$able_coupon[able_coupon].able_coupon_disamt}>元</td>
+                            <td><{$able_coupon[able_coupon].able_coupon_start}></td>
+                            <td><{$able_coupon[able_coupon].able_coupon_end}></td>
+                        </tr>
+                        <{/section}>
+                    </table>
+                </div>
+            </div>
+            <dl class="pageNum">
+            <{$pagenav}>
+            </dl>
+            <div class="chooseCoupon">
+                <button class="title">領取優惠</button>
+                <form method="post" action="memberCoupon_update.php">
+                <input type="hidden" name="wwwpath" value="{wwwpath}">
+                <div class="ableAddCoupons">
+                    <table class="detail">
+                        <tr>
+                            <th width="5%">✓</th>
+                            <th width="45%">優惠名稱</th>
+                            <th width="10%">低消</th>
+                            <th width="10%">折價</th>
+                            <th width="15%">起始日期</th>
+                            <th width="15%">使用期限</th>
+                        </tr>
+                        <{section name=ableAdd_coupon loop=$ableAdd_activeCoupon}>
+                        <tr>
+                            <td width="5%"><input name="choseCoupon[]" type="checkbox" value="<{$ableAdd_activeCoupon[ableAdd_coupon].active_coupon_id}>"></td>
+                            <td class="couponName" width="45%"><{$ableAdd_activeCoupon[ableAdd_coupon].active_coupon_title}></td>
+                            <td width="10%"><{$ableAdd_activeCoupon[ableAdd_coupon].active_coupon_minAmount}>元</td>
+                            <td width="10%"><{$ableAdd_activeCoupon[ableAdd_coupon].active_coupon_disAmount}>元</td>
+                            <td width="15%"><{$ableAdd_activeCoupon[ableAdd_coupon].active_coupon_start}></td>
+                            <td width="15%"><{$ableAdd_activeCoupon[ableAdd_coupon].active_coupon_end}></td>
+                        </tr>
+                        <{/section}>
+                        <{if count($ableAdd_activeCoupon) === 0}>
+                        <tr>
+                            <td colspan="6" style="color: darkgreen; font-weight: bold;">目前無可領優惠券</td>
+                        </tr>
+                        <{/if}>
+                    </table>
+                    
+                </div>
+                <div style="margin:5% 30%;">
+                    <{include_php file="03googleRecaptcha.php"}>
+                </div>
+                <button type="button" id="takeCouponButton">點擊領取優惠</button>
+                </form>
+            </div>
+            <{/if}>
+        </div>
+    </div>
+    <a class="scrollUp" href="#">goTop</a>
+    </div>
+    <{include_php file="00footer.php"}>
+    <{include_php file="02cookiesBar.php"}>
+    <{include_php file="02facebookMessanger.php"}>
+</div>
+</body>
+<{include_php file="00footertrace.php"}>
+</html>

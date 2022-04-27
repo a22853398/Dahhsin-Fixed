@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{tpl_str}</title>
+<!-- INCLUDESCRIPT BLOCK : external -->
+<link type="text/css" rel="stylesheet" href="js/jquery/jquery-ui/themes/base/jquery.ui.all.css" />
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.datepicker.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/i18n/jquery.ui.datepicker-zh-TW.js"></script>
+<style type="text/css">
+    .ui-datepicker { width: 17em; padding: .2em .2em 0; z-index: 9999 !important; }
+    .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {width: 60px;}
+.page_title01 .row01 {
+ height:auto;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+	$( "#search_orderdate1,#search_orderdate2" ).datepicker({
+		changeYear: true,
+		changeMonth: true,
+		dateFormat: 'yy-mm-dd',
+		showAnim: 'fadeIn',
+	});
+
+	$(".row_table01 tbody tr").hover(function(){
+		$(this).addClass("row_hover");
+	},function(){
+        $(this).removeClass("row_hover");
+	});
+
+	$(".row_table01 tbody tr").bind("click",function(){
+		var pos = 0;
+		pos = $(this).attr("class").indexOf("row_selected");
+		if (pos == -1) {
+			$(this).addClass("row_selected");
+		} else {
+			$(this).removeClass("row_selected");
+		}
+	});
+
+	$(".page_title01 .title01").bind("click",function(){
+		var disck01 = $(".page_title01 .row01").css("display");
+		if (disck01 == "none") {
+			$(".page_title01 .row01").css("display","block");
+		} else {
+			$(".page_title01 .row01").css("display","none");
+		}
+	});
+
+<!-- START BLOCK : block_row01_row -->
+	$(".page_title01 .row01").css("display","block");
+<!-- END BLOCK : block_row01_row -->
+	$(".page_title01 .title01").click();
+    $.extend({
+        xbt_allfuc:function(case01,event01,event02){
+	    	if(case01 == "bt_edit"){
+			    window.location="{tpl_name}_edit.php?pid="+event01+"&page={page}&sel00_type={sel00_type}";
+			}
+			if(case01 == "bt_del"){
+			    if(confirm('確定要取消訂單 '+event02)){
+				    window.location="{tpl_name}_update.php?opt=del01&pid="+event01+"&page={page}&sel00_type={sel00_type}";
+			    }
+		    }
+        }
+    });
+
+	$(".row_table01 tbody tr .bt_edit").bind("click",function(){
+		var idx01 = $(this).parent().parent().index();
+		$.xbt_allfuc("bt_edit",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+	});
+	$(".row_table01 tbody tr .bt_del").bind("click",function(){
+		var idx01 = $(this).parent().parent().index();
+		$.xbt_allfuc("bt_del",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+	});
+
+	$("#ordlist01").click(function() {
+        window.location="Order/csvout.php";
+	});
+
+	$("#search01_down01").click(function() {
+		var urlstr = "survey_datalog.php?opt=S1&search_key1="+$("#search_key1").val()
+		+"&search_orderdate1="+$("#search_orderdate1").val()
+		+"&search_orderdate2="+$("#search_orderdate2").val()
+		+"&search_check_status="+$("#search_check_status").val()
+		+"&sel00_type="+"{sel00_type}";//問卷編號
+        window.location = urlstr;
+	});
+});
+</script>
+</head>
+<body>
+<!-- INCLUDESCRIPT BLOCK : mainMenu -->
+ 	<div class="page_title01">
+        <ul class="title01">
+            <li>{tpl_str}</li>
+            <li class="title01_str01"> [ 功能列表 ] <img src="js/ddlevelsmenu/bulletlist.gif" alt="功能列表" /></li>
+        </ul>
+        <ul class="row01">
+            <li>
+				<form name="selform" method="get" action="{tpl_name}_mang.php">
+				<input type="hidden" name="sel00_type" value="S1" />
+				關鍵字：<input name="search_key1" id="search_key1" size="40" value="{search_key1}" placeholder="填寫人姓名、回覆編號、Email"/>
+				&emsp;回覆日期：<input type="text" name="search_orderdate1" id="search_orderdate1" value="{search_orderdate1}" size="8" />
+				                <input type="text" name="search_orderdate2" id="search_orderdate2" value="{search_orderdate2}" size="8" />
+				&emsp;分析狀態：<select name="search_check_status" id="search_check_status">
+				                    <option value="">請選擇</option>
+				                    <option value="Y">已分析</option>
+				                    <option value="N">未分析</option>
+				                </select>                
+				&emsp;<input type="submit" name="search01" value="查詢" />
+                    <input type="button" name="search01_down01" id="search01_down01" value="查詢結果下載" />
+				</form>
+            </li>
+        </ul>
+	</div>
+
+	<ul class="tablist">
+        <!-- START BLOCK : tablist01_add -->
+    	<!--li><a href="#" id="raddlog01" title="新增">新增</a></li-->
+        <!-- END BLOCK : tablist01_add -->
+        <!-- START BLOCK : tablist01_batch -->
+    	<!--<li><a href="#" id="rbthlog01" title="批次修改">批次修改</a></li>-->
+        <!-- END BLOCK : tablist01_batch -->
+        <li {sel00_typeX1}><a {lv00_currentA1} href="{tpl_name}_mang.php?sel00_type=A1" title="全部">全部</a></li>
+        <!-- START BLOCK : tablist01_row -->
+    	<li {sel00_type_sel}><a {lv00_current_sel} href="{tpl_name}_mang.php?sel00_type={list_id}" title="{list_title}">{list_title}</a></li>
+        <!-- END BLOCK : tablist01_row -->
+        <li {sel00_typeX1}><a {lv00_currentX1} href="{tpl_name}_mang.php?sel00_type=X1" title="停用">停用</a></li>
+	</ul>
+
+    <form name="bth01form" id="bth01form" method="post" action="{tpl_name}_update.php">
+    <input type="hidden" name="opt" value="bth01" />
+    <input type="hidden" name="page" value="{page}" />
+    <input type="hidden" name="sel00_type" value="{sel00_type}" />
+
+	<div class="row_table01">
+        <table>
+            <caption>{pagenav}</caption>
+            <thead>
+                <tr>
+                    <th width="40">&nbsp;</th>
+                    <th style="display:none;">流水號</th>
+                    <!--<th width="30">排序</th>-->
+                    <th>回覆編號</th>
+    				<th style="display:none;">問卷編號</th>
+    				<th>問卷名稱</th>
+                    <th>填寫人姓名</th>
+                    <th>填寫人ID</th>
+                    <th>填寫日期</th>
+                    <th>填寫來源</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td colspan="8">{pagejump01}</td>
+                </tr>
+            </tfoot>
+            <tbody>
+    			<!-- START BLOCK : Table1_row -->
+                <tr {rowid01ck}>
+                    <th>{bt_del}{bt_undel}{bt_edit}</th>
+                    <td class="row_serialid" style="display:none;">{serialid}</td>
+                    <!--<td>{serialidbt}{sortid}</td>-->
+                    <td class="row_title_id">{responid}</td>
+    				<td style="display:none;">{lv00_type}</td>
+    				<td>{lv00_type_str}</td>
+                    <td>{mbr_name}</td>
+                    <td>{mbr_id}</td>
+                    <td>{add_date}</td>
+                    <td>{add_from}</td>
+                </tr>
+    			<!-- END BLOCK : Table1_row -->
+            </tbody>
+        </table>
+	</div>
+</form>
+</body>
+</html>

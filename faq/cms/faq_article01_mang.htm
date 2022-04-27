@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{tpl_str}管理</title>
+<!-- INCLUDESCRIPT BLOCK : external -->
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.mouse.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.sortable.js"></script>
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+
+  $(".row_table01 tbody").sortable();
+  //$(".row_table01 tbody").disableSelection();
+
+  $(".row_table01 tbody").bind( "sortstop", function(event, ui) {
+		$(".row_table01 tbody tr").each(function(index){
+		   $(".row_table01 tbody tr input:text[name='sortid[]']").eq(index).val((index+1)+{page_splt01_add});
+		});
+  });
+
+		$(".row_table01 tbody tr").hover(function(){
+			$(this).addClass("row_hover");
+		},function(){
+      $(this).removeClass("row_hover");
+		});
+
+		$(".row_table01 tbody tr").bind("click",function(){
+			var pos = 0;
+			pos = $(this).attr("class").indexOf("row_selected");
+			if (pos == -1) {
+				$(this).addClass("row_selected");
+			} else {
+				$(this).removeClass("row_selected");
+			}
+		});
+
+		$(".page_title01 .title01").bind("click",function(){		
+			var disck01 = $(".page_title01 .row01").css("display");
+			if (disck01 == "none") {
+				$(".page_title01 .row01").css("display","block");
+			} else {
+				$(".page_title01 .row01").css("display","none");
+			}
+		});
+
+<!-- START BLOCK : block_row01_row -->
+				$(".page_title01 .row01").css("display","block");
+<!-- END BLOCK : block_row01_row -->
+	$(".page_title01 .title01").click();
+    $.extend({
+        xbt_allfuc:function(case01,event01,event02){
+					  if(case01 == "bt_edit"){
+							  window.location="{tpl_name}_edit.php?pid="+event01+"&page={page}&sel00_type={sel00_type}";
+					  }
+					  if(case01 == "bt_del"){
+						  if(confirm('確定要停用 '+event02)){
+							  window.location="{tpl_name}_update.php?opt=del01&pid="+event01+"&page={page}&sel00_type={sel00_type}";
+						  }
+					  }
+					  if(case01 == "bt_undel"){
+						  if(confirm('確定要啟用 '+event02)){
+							  window.location="{tpl_name}_update.php?opt=undel01&pid="+event01+"&page={page}&sel00_type={sel00_type}";
+						  }
+					  }
+					  if(case01 == "bt_del_real"){
+						  if(confirm('確定刪除 '+event02)){
+							  window.location="{tpl_name}_update.php?opt=del01_real&pid="+event01+"&page={page}&sel00_type={sel00_type}";
+						  }
+					  }
+        }
+    });
+
+		$(".row_table01 tbody tr .bt_edit").bind("click",function(){
+			var idx01 = $(this).parent().parent().index();
+			$.xbt_allfuc("bt_edit",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+		});
+		$(".row_table01 tbody tr .bt_del").bind("click",function(){
+			var idx01 = $(this).parent().parent().index();
+			$.xbt_allfuc("bt_del",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+		});
+		$(".row_table01 tbody tr .bt_undel").bind("click",function(){
+			var idx01 = $(this).parent().parent().index();
+			$.xbt_allfuc("bt_undel",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+		});
+		$(".row_table01 tbody tr .bt_del_real").bind("click",function(){
+			var idx01 = $(this).parent().parent().index();
+			$.xbt_allfuc("bt_del_real",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+		});
+
+	$("#raddlog01").click(function() {
+		  window.location="{tpl_name}_add.php?page={page}&sel00_type={sel00_type}";
+	});
+
+	$("#rbthlog01").click(function() {
+		  if(confirm('確定要批次修改?')){
+	      $("#bth01form").submit();
+	    }
+	});
+
+});
+//-->
+</script>
+</head>
+<body>
+<!-- INCLUDESCRIPT BLOCK : mainMenu -->
+
+ 	<div class="page_title01">
+            <ul class="title01">
+                <li>{tpl_str}管理</li>
+                <li class="title01_str01"> [ 功能列表 ] <img src="js/ddlevelsmenu/bulletlist.gif" alt="功能列表" /></li>
+            </ul>
+            <ul class="row01">
+                <li>
+
+							   <form name="selform" method="get" action="{tpl_name}_mang.php">
+							   <input type="hidden" name="sel00_type" value="S1" />
+							         關鍵字：<input name="search_key1" size="15" value="{search_key1}" />
+							        <input type="submit" name="search01" value="查詢" />
+							   </form>
+
+                </li>
+            </ul>
+	</div>
+
+	<ul class="tablist">
+<!-- START BLOCK : tablist01_add -->
+	<li><a href="#" id="raddlog01" title="新增">新增</a></li>
+<!-- END BLOCK : tablist01_add -->
+<!-- START BLOCK : tablist01_batch -->
+	<li><a href="#" id="rbthlog01" title="批次修改">批次修改</a></li>
+<!-- END BLOCK : tablist01_batch -->
+    <li {sel00_typeX1}><a {lv00_currentA1} href="{tpl_name}_mang.php?sel00_type=A1" title="全部">全部</a></li>
+<!-- START BLOCK : tablist01_row -->
+	<li {sel00_type_sel}><a {lv00_current_sel} href="{tpl_name}_mang.php?sel00_type={list_id}" title="{list_title}">{list_title}</a></li>
+<!-- END BLOCK : tablist01_row -->
+  <li {sel00_typeX1}><a {lv00_currentX1} href="{tpl_name}_mang.php?sel00_type=X1" title="停用">停用</a></li>
+	</ul>
+
+<form name="bth01form" id="bth01form" method="post" action="{tpl_name}_update.php">
+<input type="hidden" name="opt" value="bth01" />
+<input type="hidden" name="page" value="{page}" />
+<input type="hidden" name="sel00_type" value="{sel00_type}" />
+
+	<div class="row_table01">
+          <table>
+            <caption>{pagenav}</caption>
+            <thead>
+              <tr>
+                <th width="40">&nbsp;</th>
+                <th style="display:none;">流水號</th>
+                <th width="30">排序</th>
+                <th>標　　題</th>
+                <th>上架時間</th>
+                <th>下架時間</th>
+                <th>人員</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="8">{pagejump01}</td>
+              </tr>
+            </tfoot>
+            <tbody>
+							<!-- START BLOCK : Table1_row -->
+              <tr {rowid01ck}>
+                <th>{bt_del}{bt_undel}{bt_edit}</th>
+                <td class="row_serialid" style="display:none;">{serialid}</td>
+                <td>{serialidbt}{sortid}</td>
+                <td class="row_title_id">{title01}</td>
+                <td>{news_date}</td>
+                <td>{news_end_date}</td>
+                <td>{member_str01}</td>
+              </tr>
+							<!-- END BLOCK : Table1_row -->
+            </tbody>
+          </table>
+	</div>
+</form>
+
+</body>
+</html>

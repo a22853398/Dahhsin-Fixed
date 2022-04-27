@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<title>支援下載</title>
+<{$baseurl_href}>
+<{include_php file="00metahead.php"}>
+<{include_php file="02lineTrace.php"}>
+<{include_php file="00external.php"}>
+<script type="text/javascript">
+	$(function() { 	
+		$('a.scrollUp').click(function(){
+			$('body,html').animate({scrollTop:0});
+		})
+
+        $(document).on('click ','#dlbtn01', function() {
+            let urlstr = 'downLoad.php?searchkeydl01='+$("#searchkeydl01").val();
+            window.location = urlstr;
+        });
+	});
+	window.onload=function(){
+	    $(".close-div").on('click', function(){
+	        $(".modal-back").fadeOut();
+	    });
+	    $(document).on('click', '.bnlDownload', function(){
+    	    let msg = "BNL是點讀筆音檔，電腦和手機不能播放！";
+    	    $("#fileNotice").html(msg);
+    	    $(".modal-back").fadeIn();
+    	    let downloadUrl = this.id;
+    	    $("#copyrightClose").on('click', function(){
+	            $(".modal-back").fadeOut();
+	            window.location.href= downloadUrl;
+	        });
+        });
+        $(document).on('click', '.cdDownload', function(){
+    	    let msg = "CD音檔下載之後請先解壓縮！";
+    	    $("#fileNotice").html(msg);
+    	    $(".modal-back").fadeIn();
+    	    let downloadUrl = this.id;
+    	    $("#copyrightClose").on('click', function(){
+	            $(".modal-back").fadeOut();
+	            window.location.href= downloadUrl;
+	        });
+        });
+	}
+</script>
+<style>
+    .tooltip{
+        position: relative;
+        display: inline-block
+        width: 100%;
+    }
+    .tooltip .tooltiptext{
+        visibility: hidden;
+        background-color: black;
+        color: white;
+        text-align: left;
+        border-radius: 5px;
+        position: absolute;
+        z-index: 1;
+        padding: 2px 2px 2px 2px;
+        bottom: 100%;
+        left: 35%;
+    }
+    .tooltip:hover .tooltiptext{
+        visibility: visible;
+    }
+    .bookname{
+        font-weight: bold;
+        font-size: 16px;
+        color: darkblue;
+        background: rgb(245,245,245);
+    }
+    .bnlDownload .cdDownload{
+        cursor: pointer;
+    }
+    
+    /* 版權聲明 */
+    .modal-back{
+        position: fixed;
+        background: rgba(0, 0, 0, 0.7);
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        display: none;
+    }
+    .modal-content{
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */
+        
+        position: relative;
+        background: white;
+        
+        margin-left: auto;
+        margin-right: auto;
+        top: 50%;
+	    -ms-transform: translateY(-50%);
+	    transform: translateY(-50%);
+	    width: 80%;
+	    height: 70%;
+    }
+    .modal-title{
+        width: 100%;
+        font-size: 2rem;
+        font-weight: bold;
+        height: 15%;
+        color: white;
+        background: skyblue;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-para{
+        font-size: 1.5rem;
+        line-height: 2rem;
+        padding: 2% 2%;
+        text-align: left;
+    }
+    .close-btn{
+        position: fixed;
+        text-align: center;
+        bottom: 0;
+        width: 100%;
+        padding-bottom: 2%;
+    }
+    .close-btn button{
+        font-size: 1.5rem;
+        border: 1px solid navy;
+        background: navy;
+        font-weight: bold;
+        color: white;
+        padding: 0.5% 2%;
+        border-radius: 15px;
+        cursor: pointer;
+    }
+    .close-btn button:hover{
+        background: rgba(0, 255, 255, 0.1);
+        color: red;
+    }
+    .close-div{
+        position: fixed;
+        right: 0;
+        top: 0;
+        height: 14%;
+        color: white;
+        background: navy;
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+        border: 2px solid navy;
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+</head>
+<body>
+<div class="modal-back">
+    <div class="modal-content">
+        <div class="modal-title">音檔下載注意事項</div>
+        <div class="close-div">關閉<br>&#10006;</div>
+        <div class="modal-para">
+            大新官網所有智慧筆音檔、CD下載音檔及其他任何格式的影音媒體皆為版權所有，<br>
+            嚴厲禁止任何複製拷貝之行為，也禁止任何未經授權，於網路、公開網站或線上串流影音平台等公開場合播送或上傳發佈。<br>
+            若因未能遵守前述義務，導致任何損失或損害，造成本公司及本公司集團企業、合作廠商或其他第三方之損害時，須負擔法律責任。
+            <br><br>
+            <span style="color: red;" id="fileNotice"></span>
+        </div>
+        <div class="close-btn"><button type="button" id="copyrightClose">我知道了</button></div>
+    </div>
+</div>
+<div id="wrapper" class="member"> 
+	<{include_php file="00header.php"}>
+	<div class="mainContent memberDiv" >
+		<div class="routeMain">
+		    <a href="<{$mainurl}>/">首頁</a>＞  支援下載
+        </div>
+		<div class="leftPart"> 
+	        <{include_php file="00leftmenu_dl02.php"}>
+		</div>
+		<div class="content">
+			<div class="downLoadArea">
+				<h2 class="memberTitle">支援下載</h2>
+				<div class="search">音檔搜尋：
+				    <input name="searchkeydl01" id="searchkeydl01" type="text" placeholder="部分書名、原文書名、ISBN、大新書編" style="width: 80%;" >
+				    <input type="button" name="dlbtn01" id="dlbtn01" value="查詢" />
+				</div>
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" class="downTable">
+                <{if $icount > 0}>
+                    <thead>
+                        <tr>
+                            <th>書籍</th>
+                            <th colspan="2">音檔</th>                                                                              
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <{section name=sec1 loop=$lv01data}>
+                        <tr>
+                            <td rowspan="2">
+                                <{if $lv01data[sec1].prod_visible === "N" || $lv01data[sec1].prod_visible === "N1"}>
+                                    <{section name=sec2 loop=$lv01data[sec1].lv02data_pic}>
+                                        <img style="width:80px;" src="<{$lv01data[sec1].lv02data_pic[sec2].lv02_pic_fold}>/<{$lv01data[sec1].lv02data_pic[sec2].lv02_upfile1_name}>">
+                                        <p style="color:red;">絕版書籍</p>
+                                    <{/section}>
+                                <{else}>
+                                    <{section name=sec2 loop=$lv01data[sec1].lv02data_pic}>
+                                    <a href='<{$mainurl}>/bookIntro.php?lv01_type=<{$lv01_type}>&prd_id=<{$lv01data[sec1].lv01_prod_num}>'>
+                                        <img style="width:80px;" src="<{$lv01data[sec1].lv02data_pic[sec2].lv02_pic_fold}>/<{$lv01data[sec1].lv02data_pic[sec2].lv02_upfile1_name}>">
+                                    </a>
+                                    <{/section}>
+                                <{/if}>
+                            </td> 
+                            <td class="bookname" colspan="2">
+                                <{$lv01data[sec1].lv01_prod_name}><br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <{if $lv01data[sec1].lv02data != null}>
+                            <td>
+                                <{section name=sec2 loop=$lv01data[sec1].lv02data}>
+                                <div class="tooltip">
+                                    <a value="polo" class="bnlDownload" id="<{$lv01data[sec1].lv02data[sec2].lv02_file_src}>/<{$lv01data[sec1].lv01_prod_num}>/<{$lv01data[sec1].lv02data[sec2].lv02_upfile1_name}>">
+                                        <img src="images/penDownload_3.png">
+                                    </a>
+                                    <span class="tooltiptext">
+                                        發布日期：<br><span style="color:pink;"><{$lv01data[sec1].lv02data[sec2].lv02_add_date}></span><br>
+                                        檔案名稱：<br><span style="color:gold;"><{$lv01data[sec1].lv02data[sec2].lv02_upfile1_base}></span><br>
+                                        描述：<br><span style="color:gold;"><{$lv01data[sec1].lv02data[sec2].lv02_upfile1_nameVW}></span><br>
+                                    </span>
+                    
+                                </div>
+                                <{/section}>
+                            </td>
+                            <{/if}>
+                            <{if $lv01data[sec1].lv02data == null}>
+                            <td>未支援點讀筆</td>
+                            <{/if}>
+                
+                            <{if $lv01data[sec1].lv02data_cd != null}>
+                            <td>
+                                <{section name=sec2 loop=$lv01data[sec1].lv02data_cd}>
+                                <div class="tooltip">
+                                    <a class="cdDownload" id="<{$lv01data[sec1].lv02data_cd[sec2].lv02_file_src}>/<{$lv01data[sec1].lv01_prod_num}>/<{$lv01data[sec1].lv02data_cd[sec2].lv02_upfile1_name}>">
+                                        <img src="images/cdDownload_3.png">
+                                    </a>    
+                                    <span class="tooltiptext">
+                                        發布日期：<br><span style="color:pink;"><{$lv01data[sec1].lv02data_cd[sec2].lv02_add_date}></span><br>
+                                        檔案名稱：<br><span style="color:gold;"><{$lv01data[sec1].lv02data_cd[sec2].lv02_upfile1_base}></span><br>
+                                        描述：<br><span style="color:gold;"><{$lv01data[sec1].lv02data_cd[sec2].lv02_upfile1_nameVW}></span><br>
+                                    </span>
+                                </div>
+                                <{/section}>
+                            </td>
+                            <{/if}>
+                            <{if $lv01data[sec1].lv02data_cd == null}>
+                            <td>未支援CD音檔<br></td>
+                            <{/if}>
+                        </tr>
+                    <{/section}>
+                    </tbody>
+                <{/if}>
+                <{if $icount <= 0}>
+                <tr>
+                    <th>
+                        <p class="downNone">此分類書籍並支援音檔下載</p>
+                    </th>
+                </tr>
+                <{/if}>
+                </table>
+            </div>
+		</div>
+		<a class="scrollUp" href="#">goTop</a>
+	</div>
+
+<{include_php file="02cookiesBar.php"}>
+<{include_php file="00footer.php"}>
+<{include_php file="02facebookMessanger.php"}>
+
+<{include_php file="02lineButton.php"}>
+
+</div>
+</body>
+<{include_php file="00footertrace.php"}>
+</html>

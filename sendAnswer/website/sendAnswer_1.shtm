@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<title>大新書局</title>
+<{$baseurl_href}>
+<{include_php file="00metahead.php"}>
+<{include_php file="02lineTrace.php"}>
+<{include_php file="00external.php"}>
+<link rel="stylesheet" type="text/css" href="css/learningMap.css">
+<style>
+    #preview_pic{
+        border: 0.5px solid;
+        width: 35%;
+    }
+</style>
+
+
+<script type="text/javascript">
+	$(function() { 	
+		$('a.scrollUp').click(function(){
+			$('body,html').animate({scrollTop:0});
+		})
+	});
+	
+</script>
+<script type="text/javascript" src="js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.validate.addMethod.js"></script>
+<script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap-tooltip.css" />
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $(document).on('click ','#refreshimg', function() {
+      	var d = new Date()
+      	$("#captchaimage").load('00showimgreq.php?'+d.getTime());
+      	return false;
+      });
+
+	$("#refreshimgbt01").click(function(){
+		$("#captchaimage").load('00showimgreq.php');
+		return false;
+	});
+
+	$("#login01_org").validate({
+		showErrors: function(errorMap, errorList) {
+		  $.each(this.validElements(), function (index, element) {
+		    var $element = $(element);
+		    $element.data("title", "").removeClass("error").tooltip("destroy");
+		  });
+		  $.each(errorList, function (index, error) {
+		    var $element = $(error.element);
+		    $element.tooltip("destroy").data("title", error.message).addClass("error").tooltip();
+		  });
+		},
+		rules: {
+			pUserID: {
+				required: true,
+				mbr_userName: true,
+				byteRangeLength: [4, 20]
+			},
+			pEmail: {
+				required: true,
+				email: true,
+				byteRangeLength: [6, 50]
+			},
+			pAnswer:{
+			    required:true,
+			}
+		},
+		messages: {
+			pUserID: {
+				required: "請輸入姓名",
+				mbr_userName: "請輸入正確姓名",
+				byteRangeLength: "姓名長度不正確"
+			},
+			pEmail: {
+				required: "請填寫Email",
+				email: "請確認Email",
+				byteRangeLength: "Email長度不正確"
+			},
+		    pAnswer:{
+		        required: "請選擇您欲索取的解答種類"
+		    }
+		},
+		submitHandler: function(form) {
+        	//form.submit();
+        	sendAnswerMaku();
+		}
+  });
+
+});
+function sendAnswerMaku(){
+    var maku = document.getElementById("maku");
+    var textMsg = document.getElementById("ch2");
+    var maku_content = document.getElementById("modal_content");
+    var array_checkboxes = [];
+    if(captchaCheck() === true){
+        textMsg.innerHTML = "解答寄送中，請稍後";
+        maku.style.display = "block";
+        maku_content.style.animationName = "modal-fade-in";
+        maku_content.style.animationDuration = "0.5s";
+        setTimeout(function(){
+            document.getElementById("login01_org").submit();
+        }, 2100);
+    }
+}
+</script>
+</head>
+<body>
+<style>
+    .modal_background{
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            position: fixed;
+            z-index: 5;
+            display: none;
+    }
+    @keyframes modal-fade-in{
+        from{
+            opacity: 0%;
+        },
+        to{
+            opacity: 100%;
+        }
+    }
+    @keyframes modal-fade-out{
+        from{
+            opacity: 100%;
+        },
+        to{
+            opacity: 0%;
+        }
+    }
+    .modal_content{
+        width: 60%;
+        height: 15vw;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        font-size: 5vw;
+        text-align: center;
+            
+        /* 防止選取 */
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */
+            
+        border: 3px solid silver;
+        border-radius: 2vw;
+        background-color: white;
+            
+        /* 垂直置中 */
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+            
+        display: flex;
+        justify-content: center;
+        align-items: center;
+            
+        /* 超出文字不換行、不顯示 */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+<div class="modal_background" id="maku">
+    <div class="modal_content" id="modal_content"><span id="ch2"></span><span id="ch3">...</span></div>
+    <script type="text/javascript">
+        function toSpans(span) {
+            var str=span.firstChild.data;
+            var a=str.length;
+            span.removeChild(span.firstChild);
+            for(var i=0; i<a; i++) {
+                var theSpan=document.createElement("SPAN");
+                theSpan.appendChild(document.createTextNode(str.charAt(i)));
+                span.appendChild(theSpan);
+            }
+        }
+        function CaihongSpan(span, hue, deg, brt, spd, hspd) {
+            this.deg=(deg==null?360:Math.abs(deg));
+            this.hue=(hue==null?0:Math.abs(hue)%360);
+            this.hspd=(hspd==null?3:Math.abs(hspd)%360);
+            this.length=span.firstChild.data.length;
+            this.span=span;
+            this.speed=(spd==null?50:Math.abs(spd));
+            this.hInc=this.deg/this.length;
+            this.brt=(brt==null?255:Math.abs(brt)%256);
+            this.timer=null;
+            toSpans(span);
+            this.moveCaihong();
+        }
+        CaihongSpan.prototype.moveCaihong = function() {
+            if(this.hue>359) this.hue-=360;
+            var color;
+            var b=this.brt;
+            var a=this.length;
+            var h=this.hue;
+            for(var i=0; i<a; i++) {
+                if(h>359) h-=360;
+                if(h<60) { color=Math.floor(((h)/60)*b); red=b;grn=color;blu=0; }
+                else if(h<120) { color=Math.floor(((h-60)/60)*b); red=b-color;grn=b;blu=0; }
+                else if(h<180) { color=Math.floor(((h-120)/60)*b); red=0;grn=b;blu=color; }
+                else if(h<240) { color=Math.floor(((h-180)/60)*b); red=0;grn=b-color;blu=b; }
+                else if(h<300) { color=Math.floor(((h-240)/60)*b); red=color;grn=0;blu=b; }
+                else { color=Math.floor(((h-300)/60)*b); red=b;grn=0;blu=b-color; }
+                h+=this.hInc;
+                this.span.childNodes[i].style.color="rgb("+red+", "+grn+", "+blu+")";
+            }
+            this.hue+=this.hspd;
+        }
+        var r3=document.getElementById("ch3");
+        var myCaihongSpan2=new CaihongSpan(r3, 0, 360, 255, 50, 350);
+        myCaihongSpan2.timer=window.setInterval("myCaihongSpan2.moveCaihong()", myCaihongSpan2.speed);
+    </script>
+</div>
+<div id="wrapper" class="member">
+
+  <{include_php file="00header.php"}>
+
+	<div class="mainContent memberDiv" >
+
+    <div class="routeMain"><a href="#">首頁</a> ＞ 學習地圖 ＞ 索取解答</div>
+  <form name="login01_org" id="login01_org" method="post" action="sendAnswerUpdate_01.php">
+  <input type="hidden" name="wwwpath" value="{wwwpath}" />
+
+<div class="leftPart">
+  <{include_php file="01sidebarLearningMap_1.php"}>
+</div>	
+
+<div class="content">
+<div class="headerBar">解答申請</div>
+
+<div class="memberArea">
+<p class="titleP  iconPadding01"><br />
+<strong>請輸入您欲收到解答的信箱及您的姓名。</strong>
+</p>
+
+<ul  class="memberForm">
+<li class="oneRow">
+    <label for="username" class="colName" style="font-size: 14px;">姓名</label>
+    <div><input type="text" name="pUserID" id="pUserID" size="25" maxlength="20" /></div>
+</li>
+<li class="oneRow">
+    <label for="username" class="colName" style="font-size: 14px;">電子信箱</label>
+    <div><input type="text"  name="pEmail" id="pEmail" size="25" /></div>
+</li>
+<li class="oneRow">
+    <label for="username" class="colName" style="font-size: 14px;">解答種類</label>
+    <div><select name="pAnswer" id="pAnswer" onChange="swapPicture();">
+        <option value="">請選擇...</option>
+        <{section name=answer loop=$answer}>
+            <option value="<{$answer[answer].prod_num}>"><{$answer[answer].prod_num}> - <{$answer[answer].prod_name}></option>
+        <{/section}>
+    </select></div>
+</li>
+<li>
+    <div style="padding-left: 15px;">
+        <img src="" id="preview_pic">
+    </div>
+    <script type="text/javascript">
+        function swapPicture(){
+            var pic=document.getElementById("preview_pic");
+            var ans_opt=document.getElementById("pAnswer");
+            switch(ans_opt.value){
+                case "":
+                    //alert("請選擇您要的解答種類");
+                    pic.src="";
+                    break;
+                <{section name=answer loop=$answer}>
+                case "<{$answer[answer].prod_num}>":
+                    pic.src="<{$answer[answer].prod_pic}>";
+                    break;
+                <{/section}>
+            }
+        }
+    </script>
+</li>
+</ul>
+
+
+<!-- reCaptcha v2 -->
+<div style="margin: auto; width: 50%;">
+    <{include_php file="03googleRecaptcha.php"}>
+</div>
+
+
+
+
+
+<div class="btnDiv">
+    <!--<input type="button" value="重新填寫" class="addBtn"/>-->
+    <input type="submit" value="確定送出" class="addBtn" onclick="javascript: return captchaCheck();" /></div>
+    </form>
+    <br />
+    <br />
+    <br />
+    <br>
+    <div>
+        <p style="font-size: 16px; color: red;">請確認您填寫的信箱是正確的，若您填寫的信箱有誤，可能無法正常寄送至您的信箱。</p>
+        <p style="font-size: 16px; color: red;">若沒有收到解答，請檢查您的垃圾桶是否有來自大新書局的信。</p>
+        <p style="font-size: 12px; color: red; font-weight: bold;">★請避免使用 ~edu.tw、~gov.tw 或 yahoo.com.tw、yahoo.com.hk 的信箱（可能會無法收到信）</p>
+        <p style="font-size: 12px; color: red; font-weight: bold;">★請確認您的信箱不會擋來自中國、新加坡或者騰訊公司的信件。</p>
+        <p style="font-size: 16px; color: black;">您若還有其他問題，您可以寄信至 <a href="mailto:dhlin@dahhsin.com.tw">dhlin@dahhsin.com.tw</a> ，我們將會盡快回覆您。</p>
+    </div>
+</div>
+
+	</div>
+	<a class="scrollUp" href="#">goTop</a>
+	</div>
+<{include_php file="02cookiesBar.php"}>
+<{include_php file="02facebookMessanger.php"}>
+<{include_php file="00footer.php"}>
+</div>
+</body>
+<{include_php file="00footertrace.php"}>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{tpl_str}</title>
+<!-- INCLUDESCRIPT BLOCK : external -->
+<link type="text/css" rel="stylesheet" href="js/jquery/jquery-ui/themes/base/jquery.ui.all.css" />
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.datepicker.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/i18n/jquery.ui.datepicker-zh-TW.js"></script>
+
+
+<!-- BootStrap，用在說明文字窗，但會和jQuery衝突 -->
+<!--
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+-->
+
+<style type="text/css">
+    .ui-datepicker { width: 17em; padding: .2em .2em 0; z-index: 9999 !important; }
+    .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {width: 60px;}
+.page_title01 .row01 {
+ height:auto;
+}
+    .modal{
+        color: white;
+        position: fixed;
+        background: black;
+        left:40%;
+        width:20%;
+        padding: 5px;
+        top: 150px;
+        border: solid 2px;
+        border-color: black;
+        font-size: 16px;
+        display: none;
+    }
+    .modal:hover{
+        opacity: 80%;
+    }
+    .close{
+        display: none;
+        position: fixed;
+        left: 60%;
+        top:135px;
+        height: 25px;
+        width: 25px;
+        background: #E9E9E9;
+        z-index: 1;
+        
+        cursor: pointer;/* 鼠標 */
+        border-radius: 15px;/* 圓角 */
+        
+        text-align:center;
+    }
+    .close:hover{
+        color: white;
+        background: black;
+    }
+    
+</style>
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+
+		$( "#search_orderdate1,#search_orderdate2" ).datepicker({
+			changeYear: true,
+			changeMonth: true,
+			dateFormat: 'yy-mm-dd',
+			showAnim: 'fadeIn',
+		});
+
+		$(".row_table01 tbody tr").hover(function(){
+			$(this).addClass("row_hover");
+		},function(){
+      $(this).removeClass("row_hover");
+		});
+
+		$(".row_table01 tbody tr").bind("click",function(){
+			var pos = 0;
+			pos = $(this).attr("class").indexOf("row_selected");
+			if (pos == -1) {
+				$(this).addClass("row_selected");
+			} else {
+				$(this).removeClass("row_selected");
+			}
+		});
+
+		$(".page_title01 .title01").bind("click",function(){
+			var disck01 = $(".page_title01 .row01").css("display");
+			if (disck01 == "none") {
+				$(".page_title01 .row01").css("display","block");
+			} else {
+				$(".page_title01 .row01").css("display","none");
+			}
+		});
+
+<!-- START BLOCK : block_row01_row -->
+				$(".page_title01 .row01").css("display","block");
+<!-- END BLOCK : block_row01_row -->
+	$(".page_title01 .title01").click();
+    $.extend({
+        xbt_allfuc:function(case01,event01,event02){
+					  if(case01 == "bt_edit"){
+							  window.location="{tpl_name}_edit.php?pid="+event01+"&page={page}&sel00_type={sel00_type}";
+					  }
+					  if(case01 == "bt_del"){
+						  if(confirm('確定要取消訂單 '+event02)){
+							  window.location="{tpl_name}_update.php?opt=del01&pid="+event01+"&page={page}&sel00_type={sel00_type}";
+						  }
+					  }
+        }
+    });
+
+		$(".row_table01 tbody tr .bt_edit").bind("click",function(){
+			var idx01 = $(this).parent().parent().index();
+			$.xbt_allfuc("bt_edit",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+		});
+		$(".row_table01 tbody tr .bt_del").bind("click",function(){
+			var idx01 = $(this).parent().parent().index();
+			$.xbt_allfuc("bt_del",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+		});
+
+	$("#ordlist01").click(function() {
+	  window.location="Order/csvout.php";
+	});
+
+    //查詢結果下載(失效中&拔掉)
+	$("#search01_down01").click(function() {
+		var urlstr = "order_list_datalog.php?opt=S1&search_key1="+$("#search_key1").val()
+		+"&search_orderid="+$("#search_orderid").val()
+		+"&search_process_type="+$("#search_process_type").val()
+		+"&search_pay_type="+$("#search_pay_type").val()
+		+"&search_sex="+$("#search_sex").val()
+		+"&search_orderdate1="+$("#search_orderdate1").val()
+		+"&search_orderdate2="+$("#search_orderdate2").val();
+		//window.open(urlstr);
+	  window.location = urlstr;
+	});
+    
+    /*
+    switch($("#search_type").val()){
+        case "":
+            $("#search_type_prod_name").css("display","none");
+            $("#search_type_prod_num").css("display","none");
+            $("#search_type_dis_event").css("display","none");
+            $("#search_type_choose_event").css("display","none");
+            break;
+    }
+    */
+    //檢查有沒有選查詢方法
+    $("#search01").on('click', function(){
+        if($("#search_type").val() == ""){
+            alert('請選擇查詢方法');
+            return false;
+        }
+    });
+    //點下去會跳視窗看說明
+    $("#btn_intro").on('click', function(){
+        //$(".modal").css('display','block');
+        //$(".close").css('display','block');
+        $(".modal").toggle();
+        $(".close").toggle();
+        return false;
+    });
+    $(".close").on('click',function(){
+        $(".modal").css('display','none');
+        $(".close").css('display','none');
+        return false;
+    });
+    
+    //searchTypeRankContent();
+});
+//搜尋方法決定要顯示的內容要不要有商品單價等
+function searchTypeRankContent(){
+    var search_type_temp = "{search_type}";
+    var rank_content = document.getElementById("rank_content");
+    
+            
+    switch(search_type_temp){
+        case "prod_qty_separate":
+        case "prod_amount_separate":  
+           break;
+        case "prod_qty":
+        case "prod_amount":
+            break;
+    }
+}
+/*
+<tr {rowid02ck}>
+    <td width='30'>&nbsp;</td>
+    <td>{rank}</td>
+    <td style='text-align:left;'>{prod_num}</td>
+    <td style='text-align:left;'>{prod_name}</td>
+    <td style='text-align:left;'>{prod_price}</td>
+    <td style='text=align:left;'>{ord_typestr}</td>
+    <td style='text-align:left;'>{sold_qty}</td>
+    <td>{total_amount}</td>
+</tr>
+*/
+//-->
+
+function setSearhTypeValues(){
+    $("#search_type").val("{search_type}");
+}
+window.onload=function(){
+    setSearhTypeValues();
+}
+</script>
+</head>
+<body>
+<!-- INCLUDESCRIPT BLOCK : mainMenu -->
+
+ 	<div class="page_title01">
+            <ul class="title01">
+                <li>{tpl_str}</li>
+                <li class="title01_str01"> [ 功能列表 ] <img src="js/ddlevelsmenu/bulletlist.gif" alt="功能列表" /></li>
+            </ul>
+            <form name="selform" method="get" action="{tpl_name}.php">
+            <ul class="row01">
+                <li>
+							       起始日期：<input type="date" name="start_date" value="{start_date}">
+							       &emsp;結束日期：<input type="date" name="end_date" id="end_date" value="{end_date}">
+							       &emsp;&emsp;查詢方式：<select name="search_type" id="search_type" value="{search_type}">
+							           <option value="">請選擇...</option>
+							           <optgroup label="銷售數量">
+							               <option value="prod_qty_separate">商品種類分開</option>
+							               <option value="prod_qty">商品種類不分開</option>
+							           </optgroup>
+							           <optgroup label="銷售金額">
+							               <option value="prod_amount_separate">商品種類分開</option>
+							               <option value="prod_amount">商品種類不分開</option>
+							           </optgroup>
+							       </select>
+							       &emsp;&emsp;<input type="submit" name="search01" value="查詢" id="search01"/>
+							       &emsp;&emsp;<input type="submit" id="btn_intro" value="查詢說明">
+							       
+							       <!-- 商品種類說明 -->
+							       <button class="close" id="btn_close">&#10006;</button>
+							       <div class="modal" id="prod_type_intro">商品種類指「任選館」、「促銷折扣館」等不同折價活動之商品。<br>
+							                                                商品在加入購物車的時候，會因在不同的折價活動中而有不同價格。<br>
+							                                                <span style="color:yellow;">商品種類不分開</span>：不管怎樣將商品編號相同的商品加在一起計算。
+							                                                <span style="color:pink;">商品單價和商品種類也混在一起不得參考。</span><br>
+							                                                <span style="color:yellow;">商品種類分開</span>：就算同樣商品編號之商品，也依折價方活動不同而分開計算。<br>
+							        </div>
+							        <!-- 商品種類說明 END -->
+							        
+							        
+							       
+				</li>
+			</ul>
+            </form>
+	</div>
+
+
+<ul class="tablist">
+<!-- START BLOCK : tablist01_row -->
+<li {sel00_type_sel}><a {lv00_current_sel} href="{tpl_name}.php?sel00_type={list_id}" title="{list_title}">{list_title}</a></li>
+<!-- END BLOCK : tablist01_row -->
+</ul>
+
+<!-- <form name="bth01form" id="bth01form" method="post" action="{tpl_name}_update.php"> -->
+
+<input type="hidden" name="opt" value="bth01" />
+<input type="hidden" name="page" value="{page}" />
+<input type="hidden" name="sel00_type" value="{sel00_type}" />
+
+<div class="row_table01">
+    
+    <table id="prod_qty_rank">
+        <caption>搜尋條件：<span style="color:red;">{start_date}～{end_date}，{search_type_str}</span></caption>
+        <caption>{pagenav}</caption>
+        <thead>
+            <tr>
+                <th width="30">&nbsp;</th>
+                <th>排名</th>
+                <th>商品編號</th>
+                <th>商品名稱</th>
+                <th>商品副標</th>
+                <th>商品單價</th>
+                <th>商品種類</th>
+                <th>數量總計</th>
+                <th>金額總計</th>
+            </tr>
+        </thead>
+        <!-- START BLOCK : Table2_row -->
+        <tbody id="rank_content">
+            <tr {rowid02ck}>
+                <td width='30'>&nbsp;</td>
+                <td>{rank}</td>
+                <td style='text-align:left;'>{prod_num}</td>
+                <td style='text-align:left;'>{prod_name}</td>
+                <td style='text-align:left;'>{prod_namesub}</td>
+                <td style='text-align:left;'>{prod_price}</td>
+                <td style='text=align:left;'>{ord_typestr}</td>
+                <td style='text-align:left;'>{sold_qty}</td>
+                <td>{total_amount}</td>
+            </tr>
+        </tbody>
+        <!-- END BLOCK : Table2_row -->
+        <tfoot>
+            <tr>
+                <td colspan="12">{pagejump01}</td>
+            </tr>
+        </tfoot>
+    </table>
+    
+    
+    
+    <!--
+    <table>
+        <thead>
+        <tr>
+            <th style="font-weight:bold;" id="search_details">點此看詳細資訊</th>
+        </tr>
+        </thead>
+    </table>
+    
+    <div id="search_details_content" style="display:none;">
+    <table>
+        
+        <thead>
+            <tr>
+                <th width="30">&nbsp;</th>
+                <th>商品編號</th>
+                <th>商品名稱</th>
+                <th>商品單價</th>
+                <th>賣出數量</th>
+                <th>商品種類</th>
+                <th>訂單編號</th>
+                <th>訂購姓名</th>
+                <th>新增日期</th>
+                <th>新增來源</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- START BLOCK :  -->
+        <!--    <tr {rowid02ck}>
+                <td class="row_title_id">&nbsp;</td>
+                <td>{prod_num}</td>
+                <td>{prod_name}</td>
+                <td>{prod_price}</td>
+                <td>{sold_qty}</td>
+                <td>{ord_typestr}</td>
+                <td>{orderid}</td>
+                <td>{gcname}</td>
+                <td>{add_date}</td>
+                <td>{add_ipaddress}</td>
+            </tr>
+            <!-- END BLOCK :  -->
+        <!--</tbody>
+        <tfoot>
+              <tr>
+                <td colspan="12">{pagejump01}</td>
+              </tr>
+        </tfoot>
+    </table>
+    </div>
+    -->
+</div>
+
+
+
+<!-- </form> -->
+
+</body>
+</html>

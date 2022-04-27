@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{main_webname} 後端管理系統</title>
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />
+<!--default -->
+<link rel="stylesheet" type="text/css" href="stylesheets/login.css" />
+<!--jQuery core-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+<script type="text/javascript" src="js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap-tooltip.css" />
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+
+	$("#login01").validate({
+		showErrors: function(errorMap, errorList) {
+		  $.each(this.validElements(), function (index, element) {
+		    var $element = $(element);
+		    $element.data("title", "").removeClass("error").tooltip("destroy");
+		  });
+		  $.each(errorList, function (index, error) {
+		    var $element = $(error.element);
+		    $element.tooltip("destroy").data("title", error.message).addClass("error").tooltip();
+		  });
+		},
+		rules: {
+			pUserUnit: "required",
+			pUserID: {
+				required: true,
+				maxlength: 20,
+				minlength: 4
+			},
+			pPassword: {
+				required: true,
+				maxlength: 20,
+				minlength: 3
+			},
+			googleAuthenticator: {
+			    required: false,
+			}
+		},
+		messages: {
+			pUserUnit: {
+				required:"請選擇單位"
+			},
+			pUserID: {
+				required:"請填寫帳號",
+				maxlength:"帳號長度不正確",
+				minlength:"帳號至少四碼"
+			},
+			pPassword: {
+				required:"請填寫密碼",
+				maxlength:"密碼長度不正確",
+				minlength:"密碼至少三碼"
+			},
+		},
+		submitHandler: function(form) {
+        	form.submit();
+        	$(".modal").fadeIn();
+		}
+  });
+
+	$("#doPost").click(function() {
+	    if(captchaCheck() === true){
+	        $("#login01").submit();
+	    }else{
+	        return;
+	    }
+	});
+
+});
+//-->
+</script>
+<style>
+    .modal{
+        background: rgba( 0, 0, 0, 0.7);
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        display: none;
+    }
+    .modalContent{
+        width: 60%;
+        height: 20%;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        font-size: 5vw;
+        font-family: 微軟正黑體;
+        text-align: center;
+        
+        /* 防止選取 */
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */
+            
+        border: 3px solid silver;
+        border-radius: 2vw;
+        background-color: white;
+            
+        /* 垂直置中 */
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+            
+        display: flex;
+        justify-content: center;
+        align-items: center;
+            
+        /* 超出文字不換行、不顯示 */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+</head>
+<body>
+    <div class="modal">
+        <div class="modalContent">帳號密碼核對中，請稍後</div>
+    </div>
+  <form name="login01" id="login01" action="02login.php" method="post" >
+ 	<div class="login_title01">
+            <ul class="title01">
+                <li><img src="images/image1.jpg" width="430" height="198" alt="" /></li>
+            </ul>
+            <ul class="title02">
+                <li>{main_webname} 後端管理系統</li>
+            </ul>
+	</div>
+
+	<div class="login_table01">
+            <ul class="title01">
+                <li>歡迎使用本系統，請選擇登入單位、帳號及密碼</li>
+            </ul>
+            <ul class="input01">
+                <li class="text01">單&nbsp;&nbsp;位：</li>
+                <li>
+				          <select name="pUserUnit">
+				            <option value="">請選擇單位</option>
+				          <!-- START BLOCK : MANGUNIT_LIST_row -->
+				            <option value="{cd30_id}" {cd30_sel}>{cd30_name}</option>
+				          <!-- END BLOCK : MANGUNIT_LIST_row -->
+				          </select>
+                </li>
+            </ul>
+            <ul class="input01">
+                <li class="text01">帳&nbsp;&nbsp;號：</li>
+                <li><input name="pUserID" type="text" size="16" /></li>
+            </ul>
+            <ul class="input01">
+                <li class="text01">密&nbsp;&nbsp;碼：</li>
+                <li><input name="pPassword" type="password" size="16" /></li>
+            </ul>
+            
+
+
+<!-- reCaptcha -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<div style="font-weight:bold; color:rgb(2,14,140);">沒通過Google驗證，不可以進入後台</div>
+<div align="center" 
+    class="g-recaptcha" 
+    data-sitekey="6LdGyskaAAAAAKaDo31mJolZ2-aP7ysqSkpUprRQ"
+    data-theme="light" 
+    data-size="normal"
+    data-callback="verify"
+    data-expired-callback="expired"
+    data-error-callback="errorExpired">
+</div>
+<div id="captcha_answer" style="font-weight:bold; font-size:16px; margin-top:0%; font-weight:bold; color:red;"></div>
+<script>
+    var captcha_answer = document.getElementById("captcha_answer");
+    function verify(){
+        captcha_answer.innerHTML = "驗證成功";
+    }
+    function expired(){
+        captcha_answer.innerHTML = "驗證過期";
+    }
+    function errorExpired(){
+        captcha_answer.innerHTML = "驗證失敗";
+    }
+    //前端驗證我不是機器人有沒有打勾
+    function captchaCheck(){
+        var gResponse = grecaptcha.getResponse();
+        if(typeof(gResponse) !== 'string' || gResponse === '') {
+            captcha_answer.innerHTML = "請進行驗證";
+            return false;
+        }else{
+            return true;
+        }
+    }
+</script>
+            
+            <ul class="button01">
+                <li><input type="button" name="doPost" id="doPost" value="送出" /> </li>
+            </ul>
+            <ul class="button01">
+                <li><button id="setusmei" type="button" style="background:navy; color:white; font-size:1.5rem; font-weight:bold; cursor:pointer;">兩段式驗證登入教學</button></li>
+            </ul>
+            <script>
+                    document.getElementById("setusmei").addEventListener("click", function(){
+                        window.open(
+                            'https://resonant-watchmaker-e5c.notion.site/4eaad1f16a734b6e911896013b50db33',
+                            '_blank' // <- This is what makes it open in a new window.
+                        );
+                    });
+            </script>
+	</div>
+
+
+  </form>
+<br>
+</body>
+</html>

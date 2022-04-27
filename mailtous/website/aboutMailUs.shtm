@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+    <title>大新書局</title>
+    <{$baseurl_href}>
+    <{include_php file="00metahead.php"}>
+    <{include_php file="02lineTrace.php"}>
+    <{include_php file="00external.php"}>
+    <script type="text/javascript" src="js/jquery/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.validate.addMethod.js"></script>
+    <script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap-tooltip.css"/>
+    <script type="text/javascript">
+    	$(function() { 	
+    		$('a.scrollUp').click(function(){
+    		    $('body,html').animate({scrollTop:0});
+    		});
+    		$("#q_type01").bind( "change", function(){
+    		    let urlstr = "aboutMailUs.php?qvalue="+$('#q_type01').val();
+    		    $.ajax({
+    		        method: 'GET',
+    		        url: urlstr,
+    		        data: 'test',
+    		        error:function(thrownError){
+    		            console.log(thrownError);
+    		        },
+    		        success:function(response){
+    		            let options = "<option value='default'>請選擇...</option>";
+    		            options += response;
+    		            $("#q_type02").html(options);
+    		        }
+    		    });
+    		});
+    		
+    		/*自訂檢驗函式*/
+    		$.validator.addMethod("customValidation", function(value, element, arg) {
+                return arg !== value
+            }, "問題種類必選（問題種類は必須項目です）");
+    		
+    		$("#contactForm").validate({
+        		showErrors: function(errorMap, errorList) {
+        		  $.each(this.validElements(), function (index, element) {
+        		    var $element = $(element);
+        		    $element.data("title", "").removeClass("error").tooltip("destroy");
+        		  });
+        		  $.each(errorList, function (index, error) {
+        		    var $element = $(error.element);
+        		    $element.tooltip("destroy").data("title", error.message).addClass("error").tooltip();
+        		  });
+        		},
+        		rules: {
+        			mbrName:{
+        			    required: true
+        			},
+        			mbrMail:{
+        			    required: true,
+        			    email: true
+        			},
+        			mbrContent:{
+        			    required: true
+        			},
+        			q_type01:{
+        			    required: true,
+        			    customValidation: "default"
+        			},
+        			q_type02:{
+        			    required: true,
+        			    customValidation: "default"
+        			},
+        			mbrPhone:{
+        			    digits:true,
+        			    rangelength:[8,16]
+        			},
+        			mbrOrderid:{
+        			    rangelength:[12,12]
+        			}
+        		},
+        		messages: {
+        			mbrName:{
+        			    required: "姓名必填\n（名前は必須項目です）"
+        			},
+        			mbrMail:{
+        			    required: "信箱必填（メールは必須項目です）",
+        			    email: "信箱格式錯誤\n（メール形式が正しくないです）"
+        			},
+        			mbrContent:{
+        			    required: "詢問內容必填\n（お問合せ内容は必須項目です）"
+        			},
+        			mbrPhone:{
+        			    digits: "請輸入整數\n（電話番号は整数であるべき）",
+        			    rangelength: "長度不對\n（電話番号の桁が正しくないです）"
+        			},
+        			mbrOrderid:{
+        			    rangelength: "長度不對，共12字\n（注文番号の桁が正しくないです、計12桁）"
+        			}
+        		},
+        		submitHandler: function(form) {
+        		    if(captchaCheck() === true){
+        		        let confirmMsg = "請確認以下您的資料是否正確！\n姓名："+$("#mbrName").val()+"\n電話："+$("#mbrPhone").val()+"\nEmail："+$("#mbrMail").val();
+        		        if(confirm(confirmMsg)){
+        		            $('#formSubmit').attr('disabled', true);
+            		        sendAnswerMaku();
+            		        setTimeout(function(){
+            		            form.submit();
+            		        }, 3000);
+        		        }else{
+        		            return;
+        		        }
+        		    }else{
+        		        return;
+        		    }
+        		}
+        	});
+    	});
+    </script>
+    <link rel="stylesheet" type="text/css" href="css/learningMap.css">
+    <style>
+        .contactForm{
+            -webkit-user-select: none;  /* Chrome all / Safari all */
+            -moz-user-select: none;     /* Firefox all */
+            -ms-user-select: none;      /* IE 10+ */
+            user-select: none;          /* Likely future */
+        }
+        .contactForm table{
+            width: 100%;
+            border: 0.5px solid black;
+        }
+        .contactForm table tr{
+            border-bottom: 0.5px dotted silver;
+        }
+        .contactForm table tr th{
+            border-right: 0.5px dotted silver;
+            font-size: 1.5rem;
+            padding: 2% 2%;
+            color: #4799ad;
+            width: 20%;
+            top: 2%;
+            left: 2%;
+            vertical-align: middle;
+        }
+        .contactForm table tr td{
+            padding: 0% 0% 0% 2%;
+            vertical-align: middle;
+            font-size: 1.2rem;
+        }
+        .contactForm select{
+            font-size: 1.2rem;
+            margin: 1% 0%;
+            cursor: pointer;
+        }
+        .contactForm input[type="text"]{
+            font-size: 1.2rem;
+            margin: 1% 0%;
+            width: 96%;
+        }
+        .contactForm input[type="file"]{
+            cursor: pointer;
+        }
+        .contactForm textarea{
+            resize: none;
+            width: 96%;
+            height: 8rem;
+            margin: 1% 0%;
+            font-size: 1.2rem;
+        }
+        .contactForm tr th.submit{
+            text-align: center;
+        }
+        .contactForm tr th.submit button{
+            font-size: 1.2rem;
+            color: navy;
+            font-weight: bold;
+            cursor: pointer;
+            border: 0.5px;
+            border-color: #EEEEEE;
+            background: #EEEEEE;
+        }
+        .contactForm tr th.submit button:hover{
+            color: white;
+            background: navy;
+            border: 0.5px;
+            border-color: navy;
+        }
+    </style>
+</head>
+<body>
+    <{include_php file="03pleaseWait.php"}>
+    <div id="wrapper" class="about">
+        <{include_php file="00header.php"}>
+	    <div class="mainContent aboutDiv">
+            <div class="routeMain"><a href="<{$mainurl}>/">首頁</a> ＞  關於大新 ＞  寄信諮詢</div>
+            <div class="leftPart">
+                <{include_php file="00sidebarAbout.php"}>
+            </div>	
+            <div class="content">
+                <div class="aboutArea">
+                    <div class="headerBar">寄信諮詢（お問い合わせフォーム）</div>
+                    <p class="titleP iconPadding01" style="background: url(images/memberPerson02.png) no-repeat left bottom;">
+                        歡迎各位顧客將您寶貴的意見，或是您想詢問的事情，填寫在下方表格。<br>
+                        收到您的詢問或意見後，本公司的相關部門會盡快回覆您。<br>
+                    </p>
+                    <br>
+                    <form id="contactForm" class="contactForm" action="aboutMailUs_update.php" method="POST" enctype="multipart/form-data">
+                        <table>
+                            <tr>
+                                <th>問題類型</th>
+                                <td>
+                                    <select id="q_type01" name="q_type01">
+                                        <option value="default">請選擇...</option>
+                                        <{section name="question_type" loop=$question_type}>
+                                        <option value="<{$question_type[question_type].value}>"><{$question_type[question_type].title}></option>
+                                        <{/section}>
+                                    </select><br>
+                                    <select id="q_type02" name="q_type02">
+                                        <option value="default">請選擇...</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>姓名</th>
+                                <td><input id="mbrName" name="mbrName" type="text" placeholder="必需。請填入您的姓名。"></td>
+                            </tr>
+                            <tr>
+                                <th>電話</th>
+                                <td><input id="mbrPhone" name="mbrPhone" type="text" placeholder="選填。若您有需要大新書局回電的諮詢事項，建議填寫。"></td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td><input id="mbrMail" name="mbrMail" type="text" placeholder="必需。請填入能收到信的信箱。"></td>
+                            </tr>
+                            <tr>
+                                <th>諮詢內容</th>
+                                <td><textarea id="mbrContent" name="mbrContent" placeholder="必需。請在此描述您的問題。"></textarea></td>
+                            </tr>
+                            <tr>
+                                <th>訂單編號</th>
+                                <td><input id="mbrOrderid" name="mbrOrderid" type="text" placeholder="選填。第一字是英文大寫的O"></td>
+                            </tr>
+                            <tr>
+                                <th>附件</th>
+                                <td><input id="image" name="image" type="file"><span style="color:red; font-size:1rem;">限 .jpg .jpeg .png .pdf，10MB</span></td>
+                            </tr>
+                            <tr>
+                                <th>回覆語言</th>
+                                <td><input type="radio" name="mbrReplyLan" value="zh_ch" checked="true">繁體中文&emsp;
+                                    <input type="radio" name="mbrReplyLan" value="eng">English&emsp;
+                                    <input type="radio" name="mbrReplyLan" value="jpn">日本語</td>&emsp;
+                            </tr>
+                            <tr>
+                                <td colspan="2"><div style="font-size: 1.0rem; margin: 1% auto 1% 30%;"><{include_php file="03googleRecaptcha.php"}></div></td>
+                            </tr>    
+                            <tr>
+                                <th colspan="2" class="submit"><button name="formSubmit" id="formSubmit">確認送出</button></td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+            <a class="scrollUp" href="#">goTop</a>
+        </div>
+        <{include_php file="02cookiesBar.php"}>	
+        <{include_php file="00footer.php"}>
+        <{include_php file="02facebookMessanger.php"}>
+    </div>
+</body>
+<{include_php file="00footertrace.php"}>
+</html>

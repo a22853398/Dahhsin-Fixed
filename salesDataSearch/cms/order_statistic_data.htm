@@ -1,0 +1,385 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{tpl_str}</title>
+<!-- INCLUDESCRIPT BLOCK : external -->
+<link type="text/css" rel="stylesheet" href="js/jquery/jquery-ui/themes/base/jquery.ui.all.css" />
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.datepicker.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/i18n/jquery.ui.datepicker-zh-TW.js"></script>
+<style type="text/css">
+    .ui-datepicker { width: 17em; padding: .2em .2em 0; z-index: 9999 !important; }
+    .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {width: 60px;}
+    .page_title01 .row01 {
+        height:auto;
+    }
+    .tooltip{
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 130px;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      
+      /* Position the tooltip */
+      position: absolute;
+      z-index: 1;
+      top: 100%;
+      left: 50%;
+      margin-left: -60px;
+    }
+    .tooltop #tooltiptext1{
+        width: 130px;
+    }
+    .tooltip #tooltiptext2{
+        width: 80px;
+    }
+    .tooltip #tooltiptext3{
+        width: 320px;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+
+		$( "#search_orderdate1,#search_orderdate2" ).datepicker({
+			changeYear: true,
+			changeMonth: true,
+			dateFormat: 'yy-mm-dd',
+			showAnim: 'fadeIn',
+		});
+
+		$(".row_table01 tbody tr").hover(function(){
+			$(this).addClass("row_hover");
+		},function(){
+      $(this).removeClass("row_hover");
+		});
+
+		$(".row_table01 tbody tr").bind("click",function(){
+			var pos = 0;
+			pos = $(this).attr("class").indexOf("row_selected");
+			if (pos == -1) {
+				$(this).addClass("row_selected");
+			} else {
+				$(this).removeClass("row_selected");
+			}
+		});
+
+		$(".page_title01 .title01").bind("click",function(){
+			var disck01 = $(".page_title01 .row01").css("display");
+			if (disck01 == "none") {
+				$(".page_title01 .row01").css("display","block");
+				searchTypeChange();
+			} else {
+				$(".page_title01 .row01").css("display","none");
+				$("#search_type_prod_name").css("display","none");
+				$("#search_type_prod_num").css("display","none");
+			}
+		});
+
+<!-- START BLOCK : block_row01_row -->
+				$(".page_title01 .row01").css("display","block");
+<!-- END BLOCK : block_row01_row -->
+	$(".page_title01 .title01").click();
+    $.extend({
+        xbt_allfuc:function(case01,event01,event02){
+					  if(case01 == "bt_edit"){
+							  window.location="{tpl_name}_edit.php?pid="+event01+"&page={page}&sel00_type={sel00_type}";
+					  }
+					  if(case01 == "bt_del"){
+						  if(confirm('確定要取消訂單 '+event02)){
+							  window.location="{tpl_name}_update.php?opt=del01&pid="+event01+"&page={page}&sel00_type={sel00_type}";
+						  }
+					  }
+        }
+    });
+
+		$(".row_table01 tbody tr .bt_edit").bind("click",function(){
+			var idx01 = $(this).parent().parent().index();
+			$.xbt_allfuc("bt_edit",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+		});
+		$(".row_table01 tbody tr .bt_del").bind("click",function(){
+			var idx01 = $(this).parent().parent().index();
+			$.xbt_allfuc("bt_del",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+		});
+
+	$("#ordlist01").click(function() {
+	  window.location="Order/csvout.php";
+	});
+
+    //查詢結果下載(失效中&拔掉)
+	$("#search01_down01").click(function() {
+		var urlstr = "order_list_datalog.php?opt=S1&search_key1="+$("#search_key1").val()
+		+"&search_orderid="+$("#search_orderid").val()
+		+"&search_process_type="+$("#search_process_type").val()
+		+"&search_pay_type="+$("#search_pay_type").val()
+		+"&search_sex="+$("#search_sex").val()
+		+"&search_orderdate1="+$("#search_orderdate1").val()
+		+"&search_orderdate2="+$("#search_orderdate2").val();
+		//window.open(urlstr);
+	  window.location = urlstr;
+	});
+    
+
+    
+    
+});
+//ready讀取DOM完之後，讓查詢條件反映到select上之類的
+window.onload=function(){
+    setSearhTypeValues();
+    
+    //確認搜尋的值不是空的
+    $("#search01").on('click',function(){
+        if($("#search_type").val() === ""){
+            alert("請選擇查詢方式");
+            return false;
+        }else{
+            return true;
+        }
+    });
+}
+/* 比較活動的serialid，讓日期自動跳 */
+/*
+function pickDateAndCompare(json){
+    var select_value =  $("#search_type2").val();
+    //比對serialid，一樣的話，日期自動跳
+    for(var i = 0; i<Object.keys(json).length; i++){
+        if(select_value == json[i].value){
+            $("#start_date").val(json[i].st_date);//起始日期
+            $("#end_date").val(json[i].ed_date);//終止日期
+        }
+    }
+    //var t=json[0];
+    //var s=t.st_date;
+    //var u=t.value;
+    //var count = Object.keys(t).length;//計算json的長度(有幾個key)
+}
+*/
+//設置搜尋條件的初始值
+function setSearhTypeValues(){
+    $("#search_type").val('{search_type}');
+}
+//選項選擇後自動設置日期
+function autoSetDate(){
+    var start_date = document.getElementById('start_date');
+    var end_date = document.getElementById('end_date');
+    var currentTime = new Date();
+    var currentDate = currentTime.getDate();
+    var currentMonth = currentTime.getMonth()+1;//0~11所以要加1
+    var currentYear = currentTime.getFullYear();
+    var currentTime_format = currentYear+"-"+padLeft(currentMonth, 2)+"-"+padLeft(currentDate, 2);//今天日期Str
+    //alert(currentTime+"\n"+currentMonth+"\n"+currentYear);
+    var tpary = (end_date.value).split("-");//陣列，切成2021 08 01字串
+    
+    switch(document.getElementById('search_type').value){
+        case "order_daily":
+        case "amount_daily": 
+        case "member_daily":    
+            if(end_date.value === currentTime_format){
+                var tempStr = currentYear+"-"+padLeft(currentMonth, 2)+"-01";
+            }else{
+                var tempStr = tpary[0]+"-"+padLeft(tpary[1], 2)+"-01";
+            }
+            break;
+        case "order_monthly":
+        case "amount_monthly":
+        case "member_monthly":    
+            if(end_date.value === currentTime_format){
+                var tempStr = currentYear+"-01-01";    
+            }else{
+                var tempStr = tpary[0]+"-01-01";
+            }
+            break;
+        case "order_yearly":
+        case "amount_yearly":
+        case "member_yearly":
+            var tempStr = "2014-01-01";
+            break;
+        default:
+            if(end_date.value === currentTime_format){
+                var tempStr = currentYear+"-"+padLeft(currentMonth, 2)+"-01";    
+            }else{
+                var tempStr = tpary[0]+"-"+padLeft(tpary[1], 2)+"-01";
+            }
+            break;
+    }
+    start_date.value = tempStr;
+}
+//左邊補0
+function padLeft(str, len) {
+    str = '' + str;
+    if (str.length >= len) {
+        return str;
+    } else {
+        return padLeft("0" + str, len);
+    }
+}
+</script>
+</head>
+<body>
+<!-- INCLUDESCRIPT BLOCK : mainMenu -->
+ 	<div class="page_title01">
+            <ul class="title01">
+                <li>{tpl_str}</li>
+                <li class="title01_str01"> [ 功能列表 ] <img src="js/ddlevelsmenu/bulletlist.gif" alt="功能列表" /></li>
+            </ul>
+            <form name="selform" method="get" action="{tpl_name}.php">
+            <ul class="row01">
+                <li>
+                    查詢方式：
+                    <select name="search_type" id="search_type" onChange="autoSetDate();">
+					    <option value="">請選擇...</option>
+					    <optgroup label="總訂單相關">
+						    <option value="order_qty">總訂單數量及狀態</option>
+					    </optgroup>
+					    <optgroup label="成功訂單數量統計">
+					        <option value="order_delivery_type">配送方式統計</option>
+						    <option value="order_pay_type">付款方式統計</option>
+						    <option value="order_access_type">下訂版本統計</option>
+						    <option value="order_amount_type">訂單金額區間統計</option>
+						    <option value="order_daily">日期別</option>
+						    <option value="order_monthly">月總計</option>
+						    <option value="order_yearly">年總計</option>
+					    </optgroup>
+					    <optgroup label="成功訂單金額統計">
+					        <option value="amount_version">下訂版本別</option>
+					        <option value="amount_pay_type">付款方式別</option>
+					        <option value="amount_tran_type">配送方式別</option>
+						    <option value="amount_daily">日期別</option>
+						    <option value="amount_monthly">月總計</option>
+						    <option value="amount_yearly">年總計</option>
+					    </optgroup>
+					    <optgroup label="會員相關">
+						    <option value="member_daily">新增會員日期別</option>
+						    <option value="member_address">新增會員地址</option>
+						    <option value="member_comefrom">新增會員來源</option>
+						    <option value="member_monthly">新增會員月總計</option>
+						    <option value="member_yearly">新增會員年總計</option>
+						    <option value="member_dm">願意接受EDM人數</option>
+					    </optgroup>
+						<optgroup label="成功訂單折價券/贈品">
+						    <option value="coupon_used">期間已使用折價券</option>
+						    <option value="gift_qty">期間已送贈品</option>
+						</optgroup>
+					</select>
+                
+				               
+					&emsp;起始日期：<input type="date" name="start_date" id="start_date" value="{start_date}">
+					&emsp;結束日期：<input type="date" name="end_date" id="end_date" value="{end_date}">
+				    &emsp;&emsp;<input type="submit" name="search01" value="查詢" id="search01"/>
+				</li>
+			</ul>
+            </form>
+	</div>
+
+
+<ul class="tablist">
+<!-- START BLOCK : tablist01_row -->
+<li {sel00_type_sel}><a {lv00_current_sel} href="{tpl_name}.php?sel00_type={list_id}" title="{list_title}">{list_title}</a></li>
+<!-- END BLOCK : tablist01_row -->
+</ul>
+
+<!-- <form name="bth01form" id="bth01form" method="post" action="{tpl_name}_update.php"> -->
+
+<input type="hidden" name="opt" value="bth01" />
+<input type="hidden" name="page" value="{page}" />
+<input type="hidden" name="sel00_type" value="{sel00_type}" />
+
+<div class="row_table01">
+    <table>
+        <caption style="color:blue; font-weight:bold;">統計結果</caption>
+        <caption>{pagenav}</caption>
+        <thead>
+            <tr>
+                <th width="30">&nbsp;</th>
+                <th>代碼</th>
+                <th>代碼名稱</th>
+                <th>數量 / 金額</th>
+                <th>比例</th>
+            </tr>    
+        </thead>
+        <script>
+            var total = {sum};
+            function percentCal(var1, var2){
+                var answer = parseInt(var1)/ parseInt(var2);
+                var format_answer = Math.round(answer*10000) /10000;//0.028
+                var percent_answer = (format_answer * 100).toFixed(2);//變成string，取小數點後面只取二位
+                document.write(percent_answer+"%");
+            }
+            
+        </script>
+        <tbody>
+            <!-- START BLOCK : Table2_row -->
+            <tr {rowid02ck}>
+                <td width="30">&nbsp;</td>
+                <td>{fieldsName}</td>
+                <td>{fieldsNameStr}</td>
+                <td>{dataCount}</td>  
+                <td><script>percentCal({dataCount}, total);</script></td>
+            </tr>
+            <!-- END BLOCK : Table2_row -->
+            <tr style="background: rgb(255, 225, 225);">
+                <td></td>
+                <td></td>
+                <td style="font-weight:bold; color: red;">本頁總計</td>
+                <td style="font-weight:bold; color: red;">{sum}</td>
+                <td></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="12">{pagejump01}</td>
+            </tr>
+        </tfoot>
+    </table>
+    
+    <!--table>
+        
+        <caption>{pagenav}</caption>
+        <thead>
+            <tr>
+                <th width="30">&nbsp;</th>
+                <th>商品編號</th>
+                <th>商品名稱</th>
+                <th>商品副標</th>
+                <th>商品單價</th>
+                <th>商品種類</th>
+                <th>數量總計</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr {rowid02ck}>
+                <td class="row_title_id">&nbsp;</td>
+            </tr>
+            
+        </tbody>
+        <tfoot>
+              <tr>
+                <td colspan="12">{pagejump01}</td>
+              </tr>
+        </tfoot>
+    </table-->
+    
+    
+    
+
+</div>
+
+
+
+<!-- </form> -->
+
+</body>
+</html>

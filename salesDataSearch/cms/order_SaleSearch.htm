@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{tpl_str}</title>
+<!-- INCLUDESCRIPT BLOCK : external -->
+<link type="text/css" rel="stylesheet" href="js/jquery/jquery-ui/themes/base/jquery.ui.all.css" />
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/jquery.ui.datepicker.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/ui/i18n/jquery.ui.datepicker-zh-TW.js"></script>
+<style type="text/css">
+    .ui-datepicker { width: 17em; padding: .2em .2em 0; z-index: 9999 !important; }
+    .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {width: 60px;}
+.page_title01 .row01 {
+ height:auto;
+}
+</style>
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+
+		$( "#search_orderdate1,#search_orderdate2" ).datepicker({
+			changeYear: true,
+			changeMonth: true,
+			dateFormat: 'yy-mm-dd',
+			showAnim: 'fadeIn',
+		});
+
+		$(".row_table01 tbody tr").hover(function(){
+			$(this).addClass("row_hover");
+		},function(){
+      $(this).removeClass("row_hover");
+		});
+
+		$(".row_table01 tbody tr").bind("click",function(){
+			var pos = 0;
+			pos = $(this).attr("class").indexOf("row_selected");
+			if (pos == -1) {
+				$(this).addClass("row_selected");
+			} else {
+				$(this).removeClass("row_selected");
+			}
+		});
+
+		$(".page_title01 .title01").bind("click",function(){
+			var disck01 = $(".page_title01 .row01").css("display");
+			if (disck01 == "none") {
+				$(".page_title01 .row01").css("display","block");
+				searchTypeChange();
+			} else {
+				$(".page_title01 .row01").css("display","none");
+				$("#search_type_prod_name").css("display","none");
+				$("#search_type_prod_num").css("display","none");
+			}
+		});
+
+<!-- START BLOCK : block_row01_row -->
+				$(".page_title01 .row01").css("display","block");
+<!-- END BLOCK : block_row01_row -->
+	$(".page_title01 .title01").click();
+    $.extend({
+        xbt_allfuc:function(case01,event01,event02){
+					  if(case01 == "bt_edit"){
+							  window.location="{tpl_name}_edit.php?pid="+event01+"&page={page}&sel00_type={sel00_type}";
+					  }
+					  if(case01 == "bt_del"){
+						  if(confirm('確定要取消訂單 '+event02)){
+							  window.location="{tpl_name}_update.php?opt=del01&pid="+event01+"&page={page}&sel00_type={sel00_type}";
+						  }
+					  }
+        }
+    });
+
+		$(".row_table01 tbody tr .bt_edit").bind("click",function(){
+			var idx01 = $(this).parent().parent().index();
+			$.xbt_allfuc("bt_edit",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+		});
+		$(".row_table01 tbody tr .bt_del").bind("click",function(){
+			var idx01 = $(this).parent().parent().index();
+			$.xbt_allfuc("bt_del",$(".row_table01 tbody tr .row_serialid").eq(idx01).html(),$(".row_table01 tbody tr .row_title_id").eq(idx01).html());
+		});
+
+	$("#ordlist01").click(function() {
+	  window.location="Order/csvout.php";
+	});
+
+    //查詢結果下載(失效中&拔掉)
+	$("#search01_down01").click(function() {
+		var urlstr = "order_list_datalog.php?opt=S1&search_key1="+$("#search_key1").val()
+		+"&search_orderid="+$("#search_orderid").val()
+		+"&search_process_type="+$("#search_process_type").val()
+		+"&search_pay_type="+$("#search_pay_type").val()
+		+"&search_sex="+$("#search_sex").val()
+		+"&search_orderdate1="+$("#search_orderdate1").val()
+		+"&search_orderdate2="+$("#search_orderdate2").val();
+		//window.open(urlstr);
+	  window.location = urlstr;
+	});
+    
+    
+    
+    //點選搜尋方式切換不同顯示的區塊
+    //searchTypeChange();
+    $("#search_type").on('change',function(){
+        searchTypeChange();
+    });
+    
+    //確認搜尋的值不是空的
+    $("#search01").on('click',function(){
+       switch($("#search_type").val()){
+           case '':
+               alert('請選擇搜尋方式');
+               return false;
+               break;
+           case 'search_prod_name':
+               if($("#search_type2_prod_name").val() == ""){
+                    alert("請選擇搜尋條件");
+                    return false;
+                }else{
+                    if($("#search_key2_prod_name").val() == ""){
+                        alert("請輸入商品名稱");
+                        return false;
+                    }
+                }
+               break;
+            case 'search_prod_num':
+                if($("#search_type2_prod_num").val() == ""){
+                    alert("請選擇搜尋條件");
+                    return false;
+                }else{
+                    if($("#search_key2_prod_num").val() == ""){
+                        alert("請輸入品編號");
+                        return false;
+                    }
+                }
+                break;
+       }
+    });
+    //清除所有欄位的值，重新讀取頁面
+    $("#reset01").on('click',function(){
+        $("#search_type").val()="";
+        $("#search_type2_prod_name").val()="";
+        $("#search_key2_prod_name").val()="";
+        $("#search_type2_prod_num").val()="";
+        $("#search_key2_prod_num").val()="";
+    });
+    //點擊展開看詳細
+    $("#search_details").bind("click",function(){
+			var details_display = $("#search_details_content").css("display");
+			if (details_display == "none") {
+				$("#search_details_content").css("display","block");
+			} else {
+				$("#search_details_content").css("display","none");
+			}
+		});
+    
+    
+});
+//-->
+//讀取完整個頁面的DOM後執行，把option的值丟回給select之類的
+window.onload = function(){
+    setSearchTypeValues();
+    searchTypeChange();
+}
+//變換選取搜尋方式之後跳出的列
+function searchTypeChange(){
+    switch($("#search_type").val()){
+        case "":
+            $("#search_type_prod_name").css("display","none");
+            $("#search_type_prod_num").css("display","none");
+            break;
+        case "search_prod_name":
+            $("#search_type_prod_name").css("display","block");
+            $("#search_type_prod_num").css("display","none");
+            break;
+        case "search_prod_num":
+            $("#search_type_prod_name").css("display","none");
+            $("#search_type_prod_num").css("display","block");
+            break;
+       
+    }
+}
+// select 初始化查詢結果的選項
+function setSearchTypeValues(){
+    $("#search_type").val("{search_type}");//查詢方式一
+    switch("{search_type}"){
+        case 'search_prod_name':
+            $("#search_type2_prod_name").val("{search_type2_value}");
+            $("#search_key2_prod_name").val("{search_key2_value}");
+            break;
+        case 'search_prod_num':
+            $("#search_type2_prod_num").val("{search_type2_value}");
+            $("#search_key2_prod_num").val("{search_key2_value}");
+            break;
+    }
+    
+}
+</script>
+</head>
+<body>
+<!-- INCLUDESCRIPT BLOCK : mainMenu -->
+
+ 	<div class="page_title01">
+            <ul class="title01">
+                <li>{tpl_str}</li>
+                <li class="title01_str01"> [ 功能列表 ] <img src="js/ddlevelsmenu/bulletlist.gif" alt="功能列表" /></li>
+            </ul>
+            <form name="selform" method="get" action="{tpl_name}.php">
+            <ul class="row01">
+                <li>                
+							       起始日期：<input type="date" name="start_date" value="{start_date}">
+							       &emsp;結束日期：<input type="date" name="end_date" id="end_date" value="{end_date}">
+							       &emsp;&emsp;查詢方式：<select name="search_type" id="search_type" >
+							           <option value="">請選擇...</option>
+							           <option value="search_prod_name">商品名稱</option>
+							           <option value="search_prod_num">商品編號</option>
+							       </select>
+							       &emsp;&emsp;<input type="submit" name="search01" value="查詢" id="search01"/>
+							       <!-- &emsp;&emsp;<input type="submit" name="reset01" value="清除查詢結果" id="reset01"/> -->
+				</li>
+			</ul>
+			<ul class="row01" id="search_type_prod_name">
+			    <li>
+							         搜尋條件：
+							         <select name="search_type2[]" id="search_type2_prod_name">
+							            <option value="">請選擇...</option>
+							            <option value="like_prod_namesub">商品副標包含</option>
+							            <option value="like_prod_name">商品名稱包含</option>
+							         </select>
+							         &emsp;商品名稱：<input name="search_key2[]" id="search_key2_prod_name"  />
+				</li>			       
+			</ul>
+			<ul class="row01" id="search_type_prod_num">
+			    <li>
+						            搜尋條件：
+							         <select name="search_type2[]" value="" id="search_type2_prod_num">
+							            <option value="">請選擇...</option>
+							            <option value="sameAs_prod_num">與商品編號一致</option>
+							            <option value="like_prod_num">商品編號包含</option>
+							         </select>
+							         &emsp;商品編號：<input name="search_key2[]" id="search_key2_prod_num"  />
+			    </li>
+			</ul>
+            </form>
+	</div>
+
+
+<ul class="tablist">
+<!-- START BLOCK : tablist01_row -->
+<li {sel00_type_sel}><a {lv00_current_sel} href="{tpl_name}.php?sel00_type={list_id}" title="{list_title}">{list_title}</a></li>
+<!-- END BLOCK : tablist01_row -->
+</ul>
+
+<!-- <form name="bth01form" id="bth01form" method="post" action="{tpl_name}_update.php"> -->
+
+<input type="hidden" name="opt" value="bth01" />
+<input type="hidden" name="page" value="{page}" />
+<input type="hidden" name="sel00_type" value="{sel00_type}" />
+
+<div class="row_table01">
+    <table>
+        <caption style="color:blue; font-weight:bold;">您的搜尋條件</caption>
+        <thead>
+            <tr>
+                <th width="30">&nbsp;</th>
+                <th>起始日期</th>
+                <th>結束日期</th>
+                <th>查詢方式</th>
+                <th>關鍵字</th>
+            </tr>    
+        </thead>
+        <tbody>
+            <tr>
+                <td width="30">&nbsp;</td>
+                <td>{start_date}</td>
+                <td>{end_date}</td>
+                <td>{search_type_str}</td>
+                <td>{search_key2_value}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <table>
+        <caption style="color:red; font-weight:bold;">搜尋結果統計</caption>
+        <thead>
+            <tr>
+                <th width="30">&nbsp;</th>
+                <th>商品編號</th>
+                <th>商品名稱</th>
+                <th>商品副標</th>
+                <th>商品單價</th>
+                <th>商品種類</th>
+                <th>數量總計</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- START BLOCK : Table_row_total -->
+            <tr {rowid02ck}>
+                <td width="30">&nbsp;</td>
+                <td style="text-align:left;">{prod_num_total}</td>
+                <td style="text-align:left;">{prod_name_total}</td>
+                <td style="text-align:left;">{prod_namesub_total}</td>
+                <td style="text-align:left;">{prod_price_total}</td>
+                <td style="text-align:left;">{ord_typestr_total}</td>
+                <td style="text-align:left;">{sold_qty_total}</td>
+            </tr>
+            <!-- END BLOCK : Table_row_total -->
+        </tbody>
+    </table>
+    
+    <table>
+        <thead>
+        <tr>
+            <th style="font-weight:bold;" id="search_details">點此看詳細資訊</th>
+        </tr>
+        </thead>
+    </table>
+    
+    <div id="search_details_content" style="display:none;">
+    <table>
+        <caption>{pagenav}</caption>
+        <thead>
+            <tr>
+                <th width="30">&nbsp;</th>
+                <th>商品編號</th>
+                <th>商品名稱</th>
+                <th>商品副標</th>
+                <th>商品單價</th>
+                <th>賣出數量</th>
+                <th>商品種類</th>
+                <th>訂單編號</th>
+                <th>訂購姓名</th>
+                <th>新增日期</th>
+                <th>新增來源</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- START BLOCK : Table2_row -->
+            <tr {rowid02ck}>
+                <td class="row_title_id">&nbsp;</td>
+                <td>{prod_num}</td>
+                <td>{prod_name}</td>
+                <td>{prod_namesub}</td>
+                <td>{prod_price}</td>
+                <td>{sold_qty}</td>
+                <td>{ord_typestr}</td>
+                <td>{orderid}</td>
+                <td>{gcname}</td>
+                <td>{add_date}</td>
+                <td>{add_ipaddress}</td>
+            </tr>
+            <!-- END BLOCK : Table2_row -->
+        </tbody>
+        <tfoot>
+              <tr>
+                <td colspan="12">{pagejump01}</td>
+              </tr>
+        </tfoot>
+    </table>
+    </div>
+
+</div>
+
+
+
+<!-- </form> -->
+
+</body>
+</html>

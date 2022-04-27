@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<title>大新書局</title>
+<{$baseurl_href}>
+<{include_php file="00metahead.php"}>
+<{include_php file="02lineTrace.php"}>
+<{include_php file="00external.php"}>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('a.scrollUp').click(function(){
+			$('body,html').animate({scrollTop:0});
+		});
+        $("h3").on("click", function(event){
+            $(event.target).addClass("titleActive");
+		    $(event.target).next("div").toggle();
+		});
+	});
+</script>
+<style>
+    .headerBar{
+        height: 20px;
+        width: 100%;
+        margin-top: 3%;
+        margin-bottom: 10px;
+        background: #e1f4ed;
+        border: none;
+        font-size: 22px;
+        font-weight: bold;
+        padding: 6px 0px 4px 2%;
+        color: rgba(0, 0, 0, 0.3);
+        text-shadow: 0.5px 0.5px rgba(0, 0, 0, 0.5);
+        /* 防止選取 */
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */
+    }
+    .answer{
+        display: none;
+        animation-name: answer-show;
+        animation-duration: 2s;
+    }
+    @keyframes answer-show{
+        from{opacity: 0%;}
+        to{opacity: 100%;}
+    }
+    h3{
+        cursor: pointer;
+        /* 防止選取 */
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */
+    }
+    h3:hover, .titleActive{
+        font-weight: bold;
+        color: rgb(250, 200, 100);
+    }
+</style>
+</head>
+<body>
+<div id="wrapper" class="cartExplain">
+	<{include_php file="00header.php"}>
+	<div class="mainContent cartExplainDiv" >
+        <div class="routeMain"><a href="<{$mainurl}>/">首頁</a> ＞ 常見問題 ＞ <{$lv01_type}></div>
+    	
+        <div class="leftPart">
+            <{include_php file="01sidebarFaq.php"}>
+        </div>	
+    
+        <div class="content">
+            <div class="CartExplainArea">
+                <div class="headerBar"><{$lv01_type}></div>
+                <{section name=articles loop=$articlesArray}>
+                <h3><{$articlesArray[articles].title01}></h3>
+                <div class="answer">
+                    <br>
+                    <{$articlesArray[articles].content02}>
+                </div>
+                <{/section}>
+            </div>
+        </div>
+	<a class="scrollUp" href="#">goTop</a>
+	</div>
+	<{include_php file="02cookiesBar.php"}>
+    <{include_php file="00footer.php"}>
+    <{include_php file="02facebookMessanger.php"}>
+    <script type="text/jacascript">
+        
+    </script>
+</div>
+</body>
+<{include_php file="00footertrace.php"}>
+</html>

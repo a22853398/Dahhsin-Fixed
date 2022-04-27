@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-tw" lang="zh-tw">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{tpl_str}檢視</title>
+<!-- INCLUDESCRIPT BLOCK : external -->
+<script type="text/javascript" src="js/jquery/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap-tooltip.css" />
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+	$("#form1add").validate({
+		showErrors: function(errorMap, errorList) {
+		  $.each(this.validElements(), function (index, element) {
+		    var $element = $(element);
+		    $element.data("title", "").removeClass("error").tooltip("destroy");
+		  });
+		  $.each(errorList, function (index, error) {
+		    var $element = $(error.element);
+		    $element.tooltip("destroy").data("title", error.message).addClass("error").tooltip();
+		  });
+		},
+		rules: {
+			var01: {
+				required: true,
+				maxlength: 100,
+				minlength: 2
+			}
+		},
+		messages: {
+			var01: {
+				required: "請填寫標題",
+				maxlength: "標題長度不正確",
+				minlength: "標題至少兩碼"
+			}
+		},
+		submitHandler: function(form) {
+	     if(confirm('確定要修改資料?')){
+        	form.submit();
+       }
+		}
+  });
+
+	$("#doPost").click(function() {
+        $("#opt").attr("value","edit")
+        $("#form1add").submit();
+	});
+
+	$("#bkmpage01").click(function() {
+		  window.location="{tpl_name}_mang.php?page={page}&sel00_type={sel00_type}";
+	});
+
+    $("#check_status").val("{check_status}");//檢視狀態的值丟到狀態的<select>裡面
+});
+</script>
+</head>
+<body>
+<!-- INCLUDESCRIPT BLOCK : mainMenu -->
+
+<form name="form1add" id="form1add" method="post" action="{tpl_name}_update.php" enctype="multipart/form-data">
+<input type="hidden" name="opt" value="edit" />
+<input type="hidden" name="pid" value="{pid}" />
+<input type="hidden" name="page" value="{page}" />
+<input type="hidden" name="sel00_type" value="{sel00_type}" />
+
+ 	<div class="page_title01">
+            <ul class="title01">
+                <li>{tpl_str}檢視</li>
+            </ul>
+	</div>
+
+<div id="container" >
+             
+<fieldset class="inputField">
+   <legend>{tpl_str}檢視</legend>
+   <div style="float:left; width: 79%; border-right: 1px solid #DEDEDE;">
+
+		<div class="field">
+		    <label style="font-size: 1.3rem;">系統資料</label>
+		    <table style="width:100%;">
+		        <tr><td>回覆編號</td><td>{responid}</td><td>問卷編號</td><td>{survey_lv00_type}</td></tr>
+		        <tr></tr>
+		        <tr><td>問卷標題</td><td>{survey_title}</td><td>起始/終止</td><td>{survey_start_date} / {survey_end_date}</td></tr>
+		        <tr><td>會員ID</td><td>{respon_mbr_id}</td></tr>
+		        <tr><td>新增來源</td><td>{respon_add_ipaddress}</td><td>新增時間</td><td>{respon_add_date}</td></tr>
+		        <tr></tr>
+		    </table>
+		</div>
+		
+		<!-- START BLOCK : QuestionGroup -->
+		<div class="field">
+		    <label style="font-size: 1.3rem;">{question_group_title}</label>
+		    <table style="width:100%;">
+		        <!-- START BLOCK : QuestionContent -->
+		        <tr><td>{question_content}</td></tr>
+		        <tr><td>{question}</td></tr>
+		        <!-- END BLOCK : QuestionContent -->
+		    </table>
+		</div>
+        <!-- END BLOCK : QuestionGroup -->
+        
+        <script>
+            function checkValue(qName, ansValueAry){
+                let q = document.getElementsByName(qName);
+                let qTagType = q[0].tagName;
+                //用name抓題目類型
+                if(qTagType === "INPUT"){
+                    var qType = q[0].type;
+                }else if(qTagType === "SELECT"){
+                    var qType = "select";
+                }else if(qTagType === "TEXTAREA"){
+                    var qType = "textarea";
+                }
+                //每個題目類型傳值進去的方法不同
+                switch(qType){
+                    case "radio":
+                    case "checkbox":
+                        for(let i=0; i< q.length; i++){
+                            for(let j=0; j<ansValueAry.length; j++){
+                                if(ansValueAry[j] === q[i].value){
+                                    q[i].checked = true;
+                                }
+                            }
+                        }
+                        break;
+                    case "select":
+                    case "text":    
+                        q[0].value = ansValueAry[0];
+                        break;
+                    case "textarea":
+                        q[0].value = ansValueAry[0];
+                    default:
+                        break;
+                }
+            }
+            
+            <!-- START BLOCK : QuestionAnswerGroup -->
+            {answer_value_function}
+            <!-- END BLOCK : QuestionAnswerGroup -->
+        </script>
+  </div>
+  <div style="float:left; width: 20%; margin-left: 8px;">   
+
+		
+        
+		<div class="field">
+		    <label>狀態</label><br/><!-- SELECT的值由JQuery傳入 -->
+			<select name="check_status" id="check_status">
+				<option value="N">未分析</option>
+		        <option value="Y">已分析</option>
+			</select>
+		</div>
+
+		<div class="field">
+    		<label>更新人員</label>
+    		<div class="formHelp">{memberArea}&emsp;{memberID}</div>
+    		<div class="formHelp">{update_date}</div>
+    		<div class="formHelp">{update_ipaddress}</div>
+		</div>
+
+  </div>
+
+  <div class="buttons"  style="float:left; width: 100%; margin-left: 8px;">
+<!-- START BLOCK : tablist01_doPost -->
+     <input type="button" name="doPost" id="doPost" value="送出" />
+<!-- END BLOCK : tablist01_doPost -->
+     <input type="button" name="bkmpage01" id="bkmpage01" value="回管理頁" />
+  </div>
+
+</fieldset>
+
+
+</div>
+
+</form>
+</body>
+</html>
