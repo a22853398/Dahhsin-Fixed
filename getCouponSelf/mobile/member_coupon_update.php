@@ -13,7 +13,7 @@ $error_msgtype1 = "m_addCouponFailed";
 $response = $_POST["g-recaptcha-response"];//取得回傳到這邊的檔案
 //先檢驗Google Recaptcha 有沒有過
 $googleObject = new GoogleRecaptcha;
-$token = "Jz2EGfJjEv33Jvyf9W8giDKjI5J1cP5m1jboC9FOWK1";
+$token = "XXXXXXXXXXXXXXX";
 $pEmail = $_SESSION['session_webmbr_login_id'];
 $linemsg = "\n來源：".$_SERVER["HTTP_REFERER"]."\n名：".$pUserID."\n信：".$pEmail."\nIP：".$remote_ipaddress;
 if($googleObject->googleVerify($response) === true){

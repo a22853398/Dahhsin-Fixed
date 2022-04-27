@@ -27,7 +27,7 @@ include("03lineNotify.php");
 include("03googleRecaptchaVerify.php");
 $googleObject = new GoogleRecaptcha();
 //$linemsg = "\n來源".$_SERVER["HTTP_REFERER"]."\n名：".$pUserID."\n信：".$pEmail."\n解答：".$pAnswer."\nIP：".$remote_ipaddress;
-$token = "QUH41S9QNKebF8tKkzgrEnbUyARFMMFx5cKk1RKZJxq";
+$token = "XXXXXXXXXXXXXXXXXX";
 
 //判斷是手機版還是電腦版
 $site_version = '';
