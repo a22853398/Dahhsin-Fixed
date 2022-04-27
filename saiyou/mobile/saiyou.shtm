@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+<title>大新書局</title>
+<{include_php file="02lineTrace.php"}>
+<{$baseurl_href}>
+<{include_php file="00metahead.php"}>
+<{include_php file="00master.php"}>
+<link rel="stylesheet" href="css/faq.css">
+<script type="text/javascript">
+	$(function() { 	
+		$("thead").on("click", function(event){
+            $(event.target).toggleClass("titleActive");//點下去是th
+		    $(event.target).parent().parent().next("tbody").toggle();
+		});
+	});
+</script>
+<style>
+    .msgTitle{
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 5%;
+    }
+    .saiyouInfo{
+        border-top: 1px solid gray;
+        padding-top: 2%;
+    }
+    .saiyouInfo table{
+        width: 100%;
+    }
+    .saiyouInfo table thead{
+        cursor: pointer;
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;          /* Likely future */
+    }
+    .saiyouInfo table thead tr th{
+        color: darkgreen;
+        font-size: 1.3rem;
+        border-left: 0.5px solid gray;
+        border-right: 0.5px solid gray;
+        border-top: 0.5px solid gray;
+        border-bottom: 0.5px solid gray;
+        padding: 1% 1%;
+    }
+    .saiyouInfo table thead tr th:hover, .saiyouInfo table thead tr th.titleActive{
+        color:white;
+        background: darkgreen;
+    }
+    .saiyouInfo table tbody{
+        display: none;
+    }
+    .saiyouInfo table tbody tr td{
+        color: black;
+        font-size: 1rem;
+        border-left: 0.5px solid gray;
+        border-right: 0.5px solid gray;
+        border-top: 0.5px solid gray;
+        border-bottom: 0.5px solid gray;
+    }
+    .saiyouInfo table tbody tr td.item{
+        text-align:center; 
+        padding: 1% 0%;
+        width: 12%;
+    }
+    .saiyouInfo table tbody tr td.itemContent{
+        padding: 1% 1%;
+    }
+</style>
+<script type="text/javascript">
+    function onclickTitle(){
+        var answer = event.currentTarget.nextElementSibling;
+        var title = event.currentTarget;
+        //全關
+        var allAnswer = document.getElementsByTagName("dd");
+        for(var i=0; i<allAnswer.length; i++){
+            allAnswer[i].style.display = "none";
+        }
+        //再開點選的
+        answer.style.display = "block";
+        title.scrollIntoView({//視窗滾動到這個問題的標題
+            behavior: 'smooth'
+        });
+    }
+</script>
+</head>
+<body>
+  <{include_php file="00header.php"}>
+
+<div class="container-fluid">
+    <h2 class="titleBar category" id="typeTitle" value="<{$serialid_now}>"><strong>採用情報</strong></h2>
+    <{if intval(count($saiyouList)) <= 0}>
+    <div class="msgTitle">
+        本公司目前沒有招募職缺
+    </div>
+    <{else}>
+    <div class="msgTitle">
+        本公司目前招募以下職缺
+    </div>
+    <{section name=saiyouList loop=$saiyouList}>
+    <div class="saiyouInfo">
+        <table>
+    		<thead>
+    		    <tr><th colspan="2"><{$saiyouList[saiyouList].title01}></th></tr>
+    		</thead>
+    		<tbody>
+    			<tr><td class="item">部門</td><td class="itemContent"><{$saiyouList[saiyouList].depart01}></td></tr>
+    			<tr><td class="item">工作內容</td><td class="itemContent"><{$saiyouList[saiyouList].content01}></td></tr>
+    			<tr><td class="item">應徵需求</td><td class="itemContent"><{$saiyouList[saiyouList].requirement01}></td></tr>
+    			<tr><td class="item">應徵方法</td><td class="itemContent"><{$saiyouList[saiyouList].method01}></td></tr>
+    			<tr><td class="item">工作地點</td><td class="itemContent"><{$saiyouList[saiyouList].place01}></td></tr>
+    			<tr><td class="item">工作時間</td><td class="itemContent"><{$saiyouList[saiyouList].worktime01}></td></tr>
+    			<tr><td class="item">薪資待遇</td><td class="itemContent"><{$saiyouList[saiyouList].salary01}></td></tr>
+    			<tr><td class="item">其他</td><td class="itemContent"><{$saiyouList[saiyouList].other01}></td></tr>
+    			<tr><td class="item">更新日期</td><td class="itemContent"><{$saiyouList[saiyouList].update_date}></td></tr>
+    		</tbody>
+    	</table>
+    </div>
+    <{/section}>
+    <{/if}>
+    <a href="index.php" class="btn btn-back mt-4">回到首頁</a>
+</div>
+<{include_php file="../02cookiesBar.php"}>
+<{include_php file="00footer.php"}>
+<{include_php file="00footertrace.php"}>
+</body>
+</html>
